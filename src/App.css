@@ -1,0 +1,141 @@
+.App {
+	margin: 0 auto;
+	max-width: 1200px;
+}
+
+.page-content {	
+	padding: 0 15px 15px;
+}
+
+.load-block {
+	width: 100%;	
+	margin-top: 100px;
+}
+.load-block img {
+	display: block;
+	margin: 0 auto;
+}
+
+.pagination {
+    display: inline-block;
+}
+.pagination span {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    transition: background-color .2s;
+    cursor: pointer;
+    background-color: #eee;
+}
+.pagination span.current {
+    background-color: #4CAF50;
+    color: white;
+}
+.pagination span:hover:not(.current) {
+    background-color: #ddd;
+}
+
+
+.objects-wrapper {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    display: -webkit-box;
+    
+    -webkit-flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+        
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+
+    padding: 20px 0;
+    margin-left: -10px;
+}
+.objects-wrapper span.object {
+    display: inline-block;
+	position: relative;
+	margin: 10px;
+	padding: 10px;
+    background: #ececec;
+    height: 180px;
+    transition: all 0.2s;
+    opacity: 0.7;
+    width: 255px;
+    cursor: pointer;
+}
+.objects-wrapper span.object:hover {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+span.object div.object-header {
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;    
+    font-weight: bold;
+}
+span.object div.object-footer {
+	position: absolute;	
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+    bottom: 20px;
+}
+span.object > img {
+    display: block;
+    margin: 10px auto;
+    max-height: 100px;
+}
+
+
+
+.drawer-left {
+	position: relative;
+}
+.drawer-left a {
+	text-decoration: none;
+	color: #666;
+	font-weight: 300;
+	font-size: 14px;
+}
+.drawer-left .drawer-header {
+	padding: 0 16px;
+}
+.drawer-left .drawer-button {
+	position: relative;
+	left: 200px;
+    top: -55px;
+}
+
+
+.drawer-right {
+}
+.drawer-right .drawer-header {
+	padding: 0 16px;
+}
+.drawer-right .drawer-button {
+	position: relative;
+	left: 200px;
+    top: -55px;
+}
+.drawer-right .drawer-button-confirm {
+	position: relative;
+	top: 40px;
+	left: 15px;
+}
+.drawer-right .drawer-block {
+	padding: 0 16px;
+}
+
+
+@media (max-width: 767px) {
+	.appbar h1 { display: none }    
+    .objects-wrapper span.object { width: calc(100% - 30px) }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .objects-wrapper span.object { width: 205px }
+}
+
