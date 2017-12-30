@@ -114,19 +114,16 @@ span.object > img {
 }
 .drawer-right .drawer-header {
 	padding: 0 16px;
+    margin-bottom: 0;
 }
 .drawer-right .drawer-button {
 	position: relative;
 	left: 200px;
-    top: -55px;
-}
-.drawer-right .drawer-button-confirm {
-	position: relative;
-	top: 40px;
-	left: 15px;
+    top: -35px;
 }
 .drawer-right .drawer-block {
-	padding: 0 16px;
+	padding: 10px 16px;
+    border-top: 1px solid #eee;
 }
 
 
@@ -139,3 +136,14 @@ span.object > img {
     .objects-wrapper span.object { width: 205px }
 }
 
+.cost-header {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+.without-sum label {
+    font-size: 11px;
+    line-height: 1.2 !important;
+    color: #999 !important;
+}
