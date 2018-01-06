@@ -87,12 +87,45 @@ class Objects extends Component {
 	}
 
 	//=========================================================================
+	formatRoomValue(value) {
+		// нормализуем значение количества комнат
+		let _room = value ? String(value) : '?';
+		let _roomValue = parseInt(_room, 10);
+		if (isNaN(_roomValue) || _roomValue <= 0) _room = '?';
+		if (_roomValue >= 4) _room = '4+';
+		return _room;
+	}
+
+	//=========================================================================
+	formatPriceValue(obj) {
+		// нормализуем значение стоимости объекта
+		if (!obj || !obj.sale) return 'без стоимости';
+
+		let _price = false;
+		let _ed = 'руб.';
+		// если это продажа
+		if (String(obj.sale) === '0')
+		{
+			_price = parseFloat(obj.price);
+			_ed = 'тыс. руб.';
+		}
+		// если это аренда
+		else if (String(obj.sale) === '1')
+		{
+			_price = parseFloat(obj.rent_price_month);
+		}
+
+		if (isNaN(_price)) return 'без стоимости';
+
+		return _price.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + _ed;
+	}
+
+	//=========================================================================
 	render() {
 		if (this.props.loading)
 		{
 			return (
 				<div className="page-content">
-					<h2>Недвижимость { CONSTANTS.CITY_NAME_2 }</h2>
 					<div className="load-block">
 						<img src={ loadIcon } alt="Загрузка данных..." />
 					</div>
@@ -105,7 +138,6 @@ class Objects extends Component {
 			{
 				return (
 					<div className="page-content">
-						<h2>Недвижимость { CONSTANTS.CITY_NAME_2 }</h2>
 						<div className="load-block">Объекты не обнаружены...</div>
 					</div>
 				);
@@ -113,22 +145,25 @@ class Objects extends Component {
 
 			return (
 				<div className="page-content">
-					<h2>Недвижимость { CONSTANTS.CITY_NAME_2 }</h2>
-
-					<div className="pagination">{ this.state.paginator.map((item) => { return item }) }</div>
+					<div className="pagination up">{ this.state.paginator.map((item) => { return item }) }</div>
 
 					<div className="objects-wrapper">
 						{ this.state.renderRecords.map((obj) => (
 							<span className="object" key={ obj.id }>
 								<div className="object-header">{ String(CONSTANTS.SALES[obj.sale]) + ' - ' + this.formatDate(obj.modified_date) }</div>
 								<img src={ 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t' + obj.item } alt={ obj.id } />
-								<div className="object-footer"><strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }</div>
+								<div className="object-footer">
+									<strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }
+									<br/>
+									<strong>Комнат:</strong> { this.formatRoomValue(obj.room_quantity) }
+									<br/>
+									<strong>Стоимость:</strong> { this.formatPriceValue(obj) }
+								</div>
 							</span>
 						)) }
 					</div>
 
-					{ this.state.renderRecords.length > 10 ? <div className="pagination">{this.state.paginator.map((item) => { return item; })}</div> : false }
-
+					{ this.state.renderRecords.length > 10 ? <div className="pagination down">{this.state.paginator.map((item) => { return item; })}</div> : false }
 				</div>
 			);
 		}

@@ -12,12 +12,13 @@ import Helper from './helper';
 ///////////////////////////////////////////////////////////////////////////////
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
 import ActionSearchIcon from 'material-ui/svg-icons/action/search';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FlatButton from 'material-ui/FlatButton';
 import NavigationCloseIcon from 'material-ui/svg-icons/navigation/close';
+import NavigationCheckIcon from 'material-ui/svg-icons/navigation/check';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from 'material-ui/Checkbox';
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +73,7 @@ class App extends Component {
 		};
 
 		// заголовок
-		this.TITLE = 'N1.Realty - ' + CONSTANTS.CITY_NAME;
+		this.TITLE = 'N1.Realty - Недвижимость ' + CONSTANTS.CITY_NAME_2;
 	}
 
 	//=========================================================================
@@ -297,7 +298,7 @@ class App extends Component {
 						title={this.TITLE}
 						onLeftIconButtonClick={() => this.setState({ openLeftDrawer: true })}
 						onRightIconButtonClick={() => this.setState({ openRightDrawer: true })}
-						iconElementRight={<IconButton><ActionSearchIcon /></IconButton>}
+						iconElementRight={<FlatButton className="search-button" label="Фильтр" labelPosition="before" icon={<ActionSearchIcon />} />}
 					/>
 
 					<Drawer
@@ -333,6 +334,7 @@ class App extends Component {
 								{
 									Object.keys(this.state.filter.sales.list).map(key => {
 										return <RadioButton
+											className="radio-inline"
 											key={ key }
 											value={ key }
 											label={ this.state.filter.sales.list[key] }
@@ -384,7 +386,7 @@ class App extends Component {
 						{
 							<div className="drawer-block">
 								<span className="cost-header">Стоимость:</span>
-								<div style={{ padding: '0 6px' }}>
+								<div style={{ padding: '0 6px', marginBottom: 10 }}>
 									<Range
 										min={ this.state.filter.price.min }
 										max={ this.state.filter.price.max }
@@ -403,6 +405,11 @@ class App extends Component {
 								/>
 							</div>
 						}
+
+						{/* ===== кнопка применения-закрытия ===== */}
+						<div className="drawer-block text-center">
+							<FloatingActionButton className="drawer-button-confirm" onClick={() => this.setState({ openRightDrawer: false })}><NavigationCheckIcon /></FloatingActionButton>
+						</div>
 						
 					</Drawer>
 
@@ -424,7 +431,7 @@ class App extends Component {
 		let _room = value ? String(value) : '?';
 		let _roomValue = parseInt(_room, 10);
 		if (isNaN(_roomValue) || _roomValue <= 0) _room = '?';
-		if (_roomValue >= 5) _room = '5';
+		if (_roomValue >= 4) _room = '4';
 		return _room;
 	}
 
