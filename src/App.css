@@ -57,17 +57,16 @@
     align-items: stretch;
 
     padding: 20px 0;
-    margin-left: -10px;
 }
 .objects-wrapper span.object {
     display: inline-block;
 	position: relative;
-	margin: 10px;
+	margin: 10px 20px 10px 0;
 	padding: 10px;
     background: #ececec;
     height: 180px;
     transition: all 0.2s;
-    width: 255px;
+    width: 250px;
     cursor: pointer;
 }
 .objects-wrapper span.object:hover {
@@ -82,7 +81,6 @@ span.object div.object-header {
 }
 span.object div.object-footer {
 	position: absolute;
-    width: 100%;
     font-size: 12px;
     bottom: 10px;
     padding-left: 20px;
@@ -145,14 +143,50 @@ span.object > img {
     margin-left: 40px;
 }
 
+.contact-block {
+    margin: 0 auto;
+    width: 500px;
+    text-align: center;
+    padding: 0 20px 10px 20px;
+}
+.contact-block .info {
+    width: 100%;
+    text-align: left;
+}
+.contact-block .info-header {
+    font-size: 18px;
+}
+.contact-block .info-notes {
+    font-size: 13px;
+}
+.contact-block .checkbox-152-fz {
+    text-align: left;
+    margin-top: 40px;
+}
+.contact-block .checkbox-152-fz label {
+    font-size: 11px;
+    line-height: 1 !important;
+}
+
+
 @media (max-width: 767px) {
 	.appbar h1 { display: none }
-    /*
-    .search-button > div > span:not(:empty) { display: none }
-    .search-button { min-width: 36px !important }    
-    .search-button > div > svg { margin: 0 !important }
-    */
-    .objects-wrapper span.object { width: calc(100% - 30px) }
+
+    .objects-wrapper span.object {
+        width: calc(100% - 20px);
+        margin: 10px 0;
+    }
+
+    span.object div.object-footer {
+        padding-left: 10px;
+    }
+
+    .contact-block {
+        margin: 0 auto;
+        width: calc(100% - 20px);
+        padding: 0;
+    }
+
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
