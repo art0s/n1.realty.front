@@ -50,7 +50,7 @@ class Contact extends Component {
 				value: '',
 				error: ''
 			},
-			fzConfirm: false
+			fzConfirm: true
 		};
 
 		//---------------------------------------------------------------------

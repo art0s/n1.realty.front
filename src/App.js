@@ -148,6 +148,14 @@ class App extends Component {
 	}
 
 	//=========================================================================
+	confirmFilterHandler() {
+		return () => {
+			this.setState({ openRightDrawer: false })
+			this.props.history.push('/')
+		}
+	}
+
+	//=========================================================================
 	changeFilter(what, value) {
 		// проверка
 		if (!what || value === undefined || value === null) return;
@@ -305,15 +313,15 @@ class App extends Component {
 						docked={false}
 						width={256}
 						open={this.state.openLeftDrawer}
-						onRequestChange={(open) => this.setState({ openLeftDrawer: open })}
+						onRequestChange={ (open) => this.setState({ openLeftDrawer: open }) }
 						className="drawer-left"
 					>
 						<h2 className="drawer-header">N1.Realty</h2>
-						<FloatingActionButton secondary={true} className="drawer-button" mini={true} onClick={() => this.setState({ openLeftDrawer: false })}><NavigationCloseIcon /></FloatingActionButton>
+						<FloatingActionButton secondary={ true } className="drawer-button" mini={ true } onClick={ () => this.setState({ openLeftDrawer: false }) }><NavigationCloseIcon /></FloatingActionButton>
 
-						<MenuItem onClick={this.menuItemClickHandler('/')}>Объекты</MenuItem>
-						<MenuItem onClick={this.menuItemClickHandler('/agencies')}>Агентства</MenuItem>
-						<MenuItem onClick={this.menuItemClickHandler('/contact')}>Контакты</MenuItem>
+						<MenuItem onClick={ this.menuItemClickHandler('/') }>Объекты</MenuItem>
+						<MenuItem onClick={ this.menuItemClickHandler('/agencies') }>Агентства</MenuItem>
+						<MenuItem onClick={ this.menuItemClickHandler('/contact') }>Контакты</MenuItem>
 					</Drawer>
 
 					<Drawer
@@ -325,7 +333,7 @@ class App extends Component {
 						className="drawer-right"
 					>
 						<h2 className="drawer-header">Фильтр</h2>
-						<FloatingActionButton secondary={true} className="drawer-button" mini={true} onClick={() => this.setState({ openRightDrawer: false })}><NavigationCloseIcon /></FloatingActionButton>
+						<FloatingActionButton secondary={ true } className="drawer-button" mini={ true } onClick={ () => this.setState({ openRightDrawer: false }) }><NavigationCloseIcon /></FloatingActionButton>
 
 						{/* ===== тип сделки - аренда или продажа ===== */}
 						{
@@ -408,13 +416,13 @@ class App extends Component {
 
 						{/* ===== кнопка применения-закрытия ===== */}
 						<div className="drawer-block text-center">
-							<FloatingActionButton className="drawer-button-confirm" onClick={() => this.setState({ openRightDrawer: false })}><NavigationCheckIcon /></FloatingActionButton>
+							<FloatingActionButton className="drawer-button-confirm" onClick={ this.confirmFilterHandler() }><NavigationCheckIcon /></FloatingActionButton>
 						</div>
 						
 					</Drawer>
 
 					<Switch>
-						<Route exact path="/" component={() => <Objects loading={this.state.loading} records={ this.state.filteredRecords } />} />
+						<Route exact path="/" component={() => <Objects loading={ this.state.loading } records={ this.state.filteredRecords } />} />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
 						<Route component={ NotFound } />
