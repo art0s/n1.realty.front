@@ -63,10 +63,9 @@ class App extends Component {
 					value: []
 				},
 				price: {
-					min: 999999999,
-					minValue: 0,
+					min: 0,
 					max: 0,
-					maxValue: 0,
+					Value: [0, 0],
 					withoutSum: true
 				}
 			}
@@ -95,7 +94,9 @@ class App extends Component {
 	initFilter() {
 		// первичная фильтрация: "продажа квартир"
 		let _filter = Object.assign({}, this.state.filter);
-		// соберем данные в фильтр
+		// минимальная сумма
+		_filter.price.min = 999999999;
+		// соберем данные в фильтр - строим фильтр
 		this.state.records.forEach((item) => {
 			// sales - уже все установлено
 			// estates - значение установлено, нужно получить список
@@ -129,6 +130,9 @@ class App extends Component {
 			}
 		});
 
+		// если минимальная сумма так и не изменилась
+		if (_filter.price.min === 999999999) _filter.price.min = 0;
+
 		// сортируем фильтры
 		this.sortFilterLists(_filter);
 
@@ -156,15 +160,25 @@ class App extends Component {
 	}
 
 	//=========================================================================
+	changePriceRange(value) {
+		// получим текущий фильтр
+		let _filter = Object.assign({}, this.state.filter);
+		// меняем значение
+		_filter.price.Value = value;
+		// меняем состояние
+		this.setState({ filter: _filter });
+	}
+
+	//=========================================================================
 	changeFilter(what, value) {
 		// проверка
 		if (!what || value === undefined || value === null) return;
 		// получим текущий фильтр
 		let _filter = Object.assign({}, this.state.filter);
 		// если задано значение, которого нет в фильтре
-		if (!_filter[what] || !('value' in _filter[what])) return;
+		if (!_filter[what]) return;
 
-		// установим значения фильтра (комнаты частный случай)		
+		// установим значения фильтра (комнаты частный случай)
 		if (what === 'rooms')
 		{
 			let _room = this.getRoomValue(value.k);
@@ -181,7 +195,18 @@ class App extends Component {
 				if (_pos > -1) _filter.rooms.value.splice(_pos, 1);
 			}
 		}
+		// установим значения фильтра (стоимость частный случай)
+		else if (what === 'price')
+		{
+			if (value.k === 'check') _filter.price.withoutSum = value.v;
+			else if (value.k === 'range')
+			{
+				_filter.price.Value = value.v;
+			}
+		}
+		// иные значения
 		else _filter[what].value = value;
+
 		// получим отфильтрованные данные и новый фильтр
 		let _recs = this.filterRecords(_filter, what);
 
@@ -206,10 +231,9 @@ class App extends Component {
 			filter.rooms.value = [];
 			_newRooms = true;
 
-			filter.price.min = 999999999;
-			filter.price.minValue = 0;
+			filter.price.min = 0;
 			filter.price.max = 0;
-			filter.price.maxValue = 0;
+			filter.price.Value = [0, 0];
 			filter.price.withoutSum = true;
 		}
 		else if (what === 'estates')
@@ -218,20 +242,21 @@ class App extends Component {
 			filter.rooms.value = [];
 			_newRooms = true;
 
-			filter.price.min = 999999999;
-			filter.price.minValue = 0;
+			filter.price.min = 0;
 			filter.price.max = 0;
-			filter.price.maxValue = 0;
+			filter.price.Value = [0, 0];
 			filter.price.withoutSum = true;
 		}
 		else if (what === 'rooms')
 		{
-			filter.price.min = 999999999;
-			filter.price.minValue = 0;
+			filter.price.min = 0;
 			filter.price.max = 0;
-			filter.price.maxValue = 0;
+			filter.price.Value = [0, 0];
 			filter.price.withoutSum = true;
 		}
+
+		// минимальная сумма
+		filter.price.min = 999999999;
 
 		// фильтруем данные согласно текущему фильтру
 		let newRecs = this.state.records.filter((item) => {
@@ -255,7 +280,7 @@ class App extends Component {
 					{
 						if (filter.rooms.value.indexOf(_room) === -1) filter.rooms.value.push(_room);
 
-						// значения для сумм
+						// границы для стоимости определяем всегда
 						let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
 						if (!isNaN(_sum))
 						{
@@ -271,7 +296,7 @@ class App extends Component {
 					{
 						if (filter.rooms.value.indexOf(_room) > -1)
 						{
-							// значения для сумм
+							// границы для стоимости определяем всегда
 							let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
 							if (!isNaN(_sum))
 							{
@@ -289,9 +314,38 @@ class App extends Component {
 			return false;
 		});
 
-		filter.price.minValue = filter.price.min;
-		filter.price.maxValue = filter.price.max;
-		
+		// если минимальная сумма так и не изменилась
+		if (filter.price.min === 999999999) filter.price.min = 0;
+
+		// если это фильтрация по суммам - делаем еще один цикл
+		if (what === 'price')
+		{
+			let newPriceRecs = newRecs.filter((item) => {
+				// получим сумму
+				let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
+
+				// если объект с суммой
+				if (!isNaN(_sum))
+				{
+					if (_sum >= filter.price.Value[0] && _sum <= filter.price.Value[1]) return true;
+				}
+				// без суммы
+				else
+				{
+					if (filter.price.withoutSum) return true;
+				}
+
+				return false;
+			});
+
+			return newPriceRecs;
+		}
+		else
+		{
+			// поменяли не стоимость - нужны поставить граничные значения
+			filter.price.Value = [filter.price.min, filter.price.max];
+		}
+				
 		return newRecs;
 	}
 
@@ -398,18 +452,23 @@ class App extends Component {
 									<Range
 										min={ this.state.filter.price.min }
 										max={ this.state.filter.price.max }
-										value={ [this.state.filter.price.minValue, this.state.filter.price.maxValue] }
+										value={ this.state.filter.price.Value }
+										onChange={ (val) => this.changePriceRange(val) }
+										onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
 									/>
-									<span className="cost-header" style={{ textAlign: 'center', fontWeight: 'bold', color: '#000 !important' }}>
-										от { this.state.filter.price.minValue } до { this.state.filter.price.maxValue }
-									</span>
+									{ this.state.filteredRecords.length > 0 ?
+										<span className="cost-header" style={{ textAlign: 'center', fontWeight: 'bold', color: '#000 !important' }}>
+											от { this.state.filter.price.Value[0] } до { this.state.filter.price.Value[1] }
+										</span>
+										: false
+									}
 								</div>								
 								<Checkbox
 									className="without-sum"
 									key="withoutSum"
 									label="Показывать объекты без стоимости"
 									checked={ this.state.filter.price.withoutSum }
-									onCheck={ (obj, val) => this.changeFilter('sum', { k: 'check', v: val }) }
+									onCheck={ (obj, val) => this.changeFilter('price', { k: 'check', v: val }) }
 								/>
 							</div>
 						}
