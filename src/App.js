@@ -120,7 +120,7 @@ class App extends Component {
 					}
 
 					// значения для сумм
-					let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
+					let _sum = parseFloat(item['prep_price']);
 					if (!isNaN(_sum))
 					{
 						if (_sum > _filter.price.max) _filter.price.max = _sum;
@@ -281,7 +281,7 @@ class App extends Component {
 						if (filter.rooms.value.indexOf(_room) === -1) filter.rooms.value.push(_room);
 
 						// границы для стоимости определяем всегда
-						let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
+						let _sum = parseFloat(item['prep_price']);
 						if (!isNaN(_sum))
 						{
 							if (_sum > filter.price.max) filter.price.max = _sum;
@@ -297,7 +297,7 @@ class App extends Component {
 						if (filter.rooms.value.indexOf(_room) > -1)
 						{
 							// границы для стоимости определяем всегда
-							let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
+							let _sum = parseFloat(item['prep_price']);
 							if (!isNaN(_sum))
 							{
 								if (_sum > filter.price.max) filter.price.max = _sum;
@@ -322,8 +322,7 @@ class App extends Component {
 		{
 			let newPriceRecs = newRecs.filter((item) => {
 				// получим сумму
-				let _sum = item['sale'] === '0' ? parseFloat(item['price']) : parseFloat(item['rent_price_month']);
-
+				let _sum = parseFloat(item['prep_price']);
 				// если объект с суммой
 				if (!isNaN(_sum))
 				{
@@ -448,20 +447,21 @@ class App extends Component {
 						{
 							<div className="drawer-block">
 								<span className="cost-header">Стоимость:</span>
-								<div style={{ padding: '0 6px', marginBottom: 10 }}>
-									<Range
-										min={ this.state.filter.price.min }
-										max={ this.state.filter.price.max }
-										value={ this.state.filter.price.Value }
-										onChange={ (val) => this.changePriceRange(val) }
-										onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
-									/>
+								<div style={{ padding: '0 10px', marginBottom: 20 }}>
 									{ this.state.filteredRecords.length > 0 ?
-										<span className="cost-header" style={{ textAlign: 'center', fontWeight: 'bold', color: '#000 !important' }}>
+										<span className="cost-header" style={{ textAlign: 'center', fontWeight: 'bold', color: '#000 !important', marginBottom: 10 }}>
 											от { this.state.filter.price.Value[0] } до { this.state.filter.price.Value[1] }
 										</span>
 										: false
 									}
+									<Range
+										min={ this.state.filter.price.min }
+										max={ this.state.filter.price.max }
+										step={ this.state.filter.sales.value <= 0 ? 10 : 1000 }
+										value={ this.state.filter.price.Value }
+										onChange={ (val) => this.changePriceRange(val) }
+										onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
+									/>
 								</div>								
 								<Checkbox
 									className="without-sum"

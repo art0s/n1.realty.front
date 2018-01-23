@@ -204,3 +204,10 @@ span.object > img {
     line-height: 1.1 !important;
     color: #999 !important;
 }
+
+.rc-slider-handle {
+    width: 22px;
+    height: 22px;
+    margin-left: -11px;
+    margin-top: -9px;
+}
