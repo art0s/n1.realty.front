@@ -381,7 +381,7 @@ class App extends Component {
 						docked={ false }
 						width={ 256 }
 						openSecondary={ true }
-						swipeAreaWidth={ null }
+						swipeAreaWidth={ 256 }
 						open={ this.state.openRightDrawer }
 						onRequestChange={ (open) => this.setState({ openRightDrawer: open }) }
 						className="drawer-right"
