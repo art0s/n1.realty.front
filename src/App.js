@@ -77,6 +77,9 @@ class App extends Component {
 
 	//=========================================================================
 	componentDidMount() {
+		// отключаем свайп у парвой панели
+		this._rightDrawer.disableSwipeHandling();
+
 		// запрос списка объектов
 		axios.get(CONSTANTS.API_URL + '/objects/' + CONSTANTS.CITY_ID)
 			.then(response => {
@@ -88,6 +91,12 @@ class App extends Component {
 			.then(() => {
 				this.setState({ loading: false });
 			});
+	}
+
+	//=========================================================================
+	componentDidUpdate() {
+		// отключаем свайп у парвой панели
+		this._rightDrawer.disableSwipeHandling();
 	}
 
 	//=========================================================================
@@ -381,7 +390,7 @@ class App extends Component {
 						docked={ false }
 						width={ 256 }
 						openSecondary={ true }
-						swipeAreaWidth={ 256 }
+						ref={ ref => { this._rightDrawer = ref } }
 						open={ this.state.openRightDrawer }
 						onRequestChange={ (open) => this.setState({ openRightDrawer: open }) }
 						className="drawer-right"
