@@ -363,9 +363,9 @@ class App extends Component {
 					/>
 
 					<Drawer
-						docked={false}
-						width={256}
-						open={this.state.openLeftDrawer}
+						docked={ false }
+						width={ 256 }
+						open={ this.state.openLeftDrawer }
 						onRequestChange={ (open) => this.setState({ openLeftDrawer: open }) }
 						className="drawer-left"
 					>
@@ -378,11 +378,12 @@ class App extends Component {
 					</Drawer>
 
 					<Drawer
-						docked={false}
-						width={256}
-						openSecondary={true}
-						open={this.state.openRightDrawer}
-						onRequestChange={(open) => this.setState({ openRightDrawer: open })}
+						docked={ false }
+						width={ 256 }
+						openSecondary={ true }
+						swipeAreaWidth={ null }
+						open={ this.state.openRightDrawer }
+						onRequestChange={ (open) => this.setState({ openRightDrawer: open }) }
 						className="drawer-right"
 					>
 						<h2 className="drawer-header">Фильтр</h2>
