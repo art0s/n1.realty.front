@@ -6,6 +6,7 @@ import Contact from './components/contact';
 import NotFound from './components/notfound';
 import Agencies from './components/agencies';
 import Objects from './components/objects';
+import View from './components/view';
 ///////////////////////////////////////////////////////////////////////////////
 import axios from 'axios';
 import Helper from './helper';
@@ -380,6 +381,7 @@ class App extends Component {
 					>
 						<h2 className="drawer-header">N1.Realty</h2>
 						<FloatingActionButton secondary={ true } className="drawer-button" mini={ true } onClick={ () => this.setState({ openLeftDrawer: false }) }><NavigationCloseIcon /></FloatingActionButton>
+						<span className="drawer-header-title">{ 'Недвижимость ' + CONSTANTS.CITY_NAME_2 }</span>
 
 						<MenuItem onClick={ this.menuItemClickHandler('/') }>Объекты</MenuItem>
 						<MenuItem onClick={ this.menuItemClickHandler('/agencies') }>Агентства</MenuItem>
@@ -491,7 +493,9 @@ class App extends Component {
 					</Drawer>
 
 					<Switch>
-						<Route exact path="/" component={() => <Objects loading={ this.state.loading } records={ this.state.filteredRecords } />} />
+						<Route exact path="/" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
+						<Route exact path="/:page" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
+						<Route exact path="/view/:id" component={(props) => <View {...props} records={ this.state.filteredRecords } />} />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
 						<Route component={ NotFound } />

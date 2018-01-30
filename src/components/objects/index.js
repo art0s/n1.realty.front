@@ -1,16 +1,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import * as CONSTANTS from '../../config';
 import loadIcon from '../../asset/img/loading-hor16.gif';
+import Helper from '../../helper';
 import './style.scss';
 ///////////////////////////////////////////////////////////////////////////////
 class Objects extends Component {
 	//=========================================================================
 	constructor(props) {
-		super(props);
+		super(props);		
+
+		// получим текущую страницу из URL
+		let pageId = props.match.params.page === undefined ? 1 : parseInt(props.match.params.page, 10);
+		if (isNaN(pageId) || pageId <= 0) pageId = false;
+		if (pageId > Math.ceil(this.props.records.length / CONSTANTS.PAGE_SIZE)) pageId = false;
+
 		this.state = {
 			// текущая страница
-			currentPage: 1,
+			currentPage: pageId,
 			// список объектов для вывода на текущей странице
 			renderRecords: [],
 			// пагинатор - список кнопок
@@ -51,18 +59,19 @@ class Objects extends Component {
 		// начинаем генерацию пагинатора
 		let pagination = [];
 		if (first > 1)
-			pagination.push(<span key={ -1 } onClick={ () => this.goToPage(1) }>«</span>);
+			pagination.push(<Link key={ -1 } to={'/'}>«</Link>);
 
 		for (let i = first; i < curPage; i++)
-			pagination.push(<span key={ i } onClick={ () => this.goToPage(i) }>{ i }</span>);
+			if (i === 1) pagination.push(<Link key={ 1 } to={'/'}>1</Link>);
+			else pagination.push(<Link key={ i } to={`/${i}`}>{ i }</Link>);
 
 		pagination.push(<span className="current" key={ curPage }>{ curPage }</span>);
 
 		for (let i = curPage + 1; i <= last; i++)
-			pagination.push(<span key={ i } onClick={ () => this.goToPage(i) }>{ i }</span>);
+			pagination.push(<Link key={ i } to={`/${i}`}>{ i }</Link>);
 
 		if (last < count_pages)
-			pagination.push(<span key={ -2 } onClick={ () => this.goToPage(count_pages) }>»</span>);
+			pagination.push(<Link key={ -2 } to={`/${count_pages}`}>»</Link>);
 
 		// вырезаем нужные записи
 		let begin = (curPage - 1) * CONSTANTS.PAGE_SIZE;
@@ -82,45 +91,6 @@ class Objects extends Component {
 	}
 
 	//=========================================================================
-	goToPage(page) {
-		this.setState({ currentPage: page });
-	}
-
-	//=========================================================================
-	formatRoomValue(value) {
-		// нормализуем значение количества комнат
-		let _room = value ? String(value) : '?';
-		let _roomValue = parseInt(_room, 10);
-		if (isNaN(_roomValue) || _roomValue <= 0) _room = '?';
-		if (_roomValue >= 4) _room = '4+';
-		return _room;
-	}
-
-	//=========================================================================
-	formatPriceValue(obj) {
-		// нормализуем значение стоимости объекта
-		if (!obj || !obj.sale) return 'без стоимости';
-
-		let _price = false;
-		let _ed = 'руб.';
-		// если это продажа
-		if (String(obj.sale) === '0')
-		{
-			_price = parseFloat(obj.price);
-			_ed = 'тыс. руб.';
-		}
-		// если это аренда
-		else if (String(obj.sale) === '1')
-		{
-			_price = parseFloat(obj.rent_price_month);
-		}
-
-		if (isNaN(_price)) return 'без стоимости';
-
-		return _price.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + _ed;
-	}
-
-	//=========================================================================
 	render() {
 		if (this.props.loading)
 		{
@@ -134,7 +104,7 @@ class Objects extends Component {
 		}
 		else
 		{
-			if (!this.props.records || !this.props.records.length)
+			if (!this.props.records || !this.props.records.length || !this.state.currentPage)
 			{
 				return (
 					<div className="page-content">
@@ -149,17 +119,19 @@ class Objects extends Component {
 
 					<div className="objects-wrapper">
 						{ this.state.renderRecords.map((obj) => (
-							<span className="object" key={ obj.id }>
-								<div className="object-header">{ String(CONSTANTS.SALES[obj.sale]) + ' - ' + this.formatDate(obj.modified_date) }</div>
+							<Link to={`/view/${obj.id}`} key={ obj.id }>
+							<span className="object">
+								<div className="object-header">{ String(CONSTANTS.SALES[obj.sale]) + ' - ' + Helper.formatDate(obj.modified_date) }</div>
 								<img src={ 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t' + obj.item } alt={ obj.id } />
 								<div className="object-footer">
 									<strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }
 									<br/>
-									<strong>Комнат:</strong> { this.formatRoomValue(obj.room_quantity) }
+									<strong>Комнат:</strong> { Helper.formatRoomValue(obj.room_quantity) }
 									<br/>
-									<strong>Стоимость:</strong> { this.formatPriceValue(obj) }
+									<strong>Стоимость:</strong> { Helper.formatPriceValue(obj) }
 								</div>
 							</span>
+							</Link>
 						)) }
 					</div>
 
@@ -167,15 +139,6 @@ class Objects extends Component {
 				</div>
 			);
 		}
-	}
-
-	//=========================================================================
-	formatDate(date) {
-		if (!date) return '';
-		date = String(date);
-		if (!/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/.test(date)) return date;
-
-		return date.substr(8, 2) + '.' + date.substr(5, 2) + '.' + date.substr(0, 4);
 	}
 
 	//=========================================================================

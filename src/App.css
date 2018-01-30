@@ -1,3 +1,8 @@
+a {
+    color: #333;
+    text-decoration: none;
+}
+
 .App {
 	margin: 0 auto;
 	max-width: 1200px;
@@ -25,6 +30,7 @@
 .pagination.down {
     margin-bottom: 10px;
 }
+.pagination a,
 .pagination span {
     color: black;
     float: left;
@@ -33,10 +39,11 @@
     cursor: pointer;
     background-color: #eee;
 }
-.pagination span.current {
+.pagination .current {
     background-color: #4CAF50;
     color: white;
 }
+.pagination a:hover:not(.current),
 .pagination span:hover:not(.current) {
     background-color: #ddd;
 }
@@ -168,9 +175,21 @@ span.object > img {
     line-height: 1 !important;
 }
 
+.drawer-header-title {
+    display: none;
+    position: relative;
+    top: -50px;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 700;
+}
 
 @media (max-width: 767px) {
 	.appbar h1 { display: none }
+
+    .drawer-header-title {
+        display: block;
+    }
 
     .objects-wrapper span.object {
         width: calc(100% - 20px);
@@ -210,4 +229,12 @@ span.object > img {
     height: 22px;
     margin-left: -11px;
     margin-top: -9px;
+}
+
+.image-full {
+    max-height: 600px;
+}
+
+.image-thumb {
+    max-height: 60px;
 }
