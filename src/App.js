@@ -492,12 +492,12 @@ class App extends Component {
 						
 					</Drawer>
 
-					<Switch>
-						<Route exact path="/" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
-						<Route exact path="/:page" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
-						<Route exact path="/view/:id" component={(props) => <View {...props} records={ this.state.filteredRecords } />} />
+					<Switch>						
+						<Route exact path="/view/:org/:id" component={ View } />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
+						<Route exact path="/" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
+						<Route exact path="/:page" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
 						<Route component={ NotFound } />
 					</Switch>
 

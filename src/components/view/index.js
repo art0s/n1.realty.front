@@ -5,51 +5,34 @@ import loadIcon from '../../asset/img/loading-hor16.gif';
 import axios from 'axios';
 import * as CONSTANTS from '../../config';
 import Helper from '../../helper';
-import Gallery from 'react-grid-gallery';
+import Gallery from '../lightbox';
 ///////////////////////////////////////////////////////////////////////////////
-import './style.scss';
+import './style.css';
 ///////////////////////////////////////////////////////////////////////////////
 class View extends Component {
 	//=========================================================================
 	constructor(props){
 		super(props)
 
-		// получим ID объекта из URL
-		let objId = props.match.params.id === undefined ? false : parseInt(props.match.params.id, 10);
-		if (isNaN(objId) || objId <= 0) objId = false;
-
 		this.state = {
 			loading: true,
-			objId: objId,
 			data: null
 		};
 
 		this.imgThumbURL = 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t';
 		this.imgURL = 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img/';
+		this.imgAgent = 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_agent/';
 	}
 
 	//=========================================================================
 	componentDidMount() {
-		// получим наименование базы
-		let _dbname = false;
-		this.props.records.some(item => {
-			if (item.id === String(this.state.objId))
-			{
-				_dbname = item.dbname;
-				return true;
-			}
+		// получим ID объекта и название базы из URL
+		let objId = this.props.match.params.id === undefined ? false : parseInt(this.props.match.params.id, 10);
+		if (isNaN(objId) || objId <= 0) objId = false;
 
-			return false;
-		})
+		let objDb = this.props.match.params.org === undefined ? false : String(this.props.match.params.org);
 
-		// если база неизвестна
-		if (!_dbname)
-		{
-			this.setState({ loading: false });
-			return;
-		}
-
-		axios.get(CONSTANTS.API_URL + '/obj/' + CONSTANTS.CITY_ID + '/' + _dbname + '/' + this.state.objId)
+		axios.get(CONSTANTS.API_URL + '/obj/' + CONSTANTS.CITY_ID + '/' + objDb + '/' + objId)
 			.then(response => {
 				this.setState({ data: response.data });
 			})
@@ -75,7 +58,7 @@ class View extends Component {
 		}
 		else
 		{
-			if (!this.state.objId || !this.state.data)
+			if (!this.state.data)
 			{
 				return (
 					<div className="page-content">
@@ -83,6 +66,13 @@ class View extends Component {
 					</div>
 				);
 			}
+
+			let _imgs = this.state.data.img.map(item => {
+				return {
+					src: this.imgURL + item.item,
+	        		thumb: this.imgThumbURL + item.item
+	        	}
+			});
 
 			return (
 				<div className="page-content">
@@ -96,19 +86,15 @@ class View extends Component {
 						<strong>Стоимость:</strong> { Helper.formatPriceValue(this.state.data.obj) }
 					</div>
 					<br/>
-					<Gallery
-						enableImageSelection={ false }
-						rowHeight={ 80 }
-						images={
-							this.state.data.img.map(item => {
-								return {
-									src: this.imgURL + item.item,
-	        						thumbnail: this.imgThumbURL + item.item
-	        					}
-							})
-						}
-					/>
+					<Gallery images={ _imgs } />
 
+					<div className="agent-block">
+						<img src={ this.imgAgent + this.state.data.obj.agent_photo } alt="" />
+						<strong>{ this.state.data.obj.agent_first_name + ' ' + this.state.data.obj.agent_patronym }</strong>
+						<br/>
+						Консультант
+						<h3>{ this.state.data.obj.agent_phone_mobile }</h3>
+					</div>
 
 				</div>
 			);

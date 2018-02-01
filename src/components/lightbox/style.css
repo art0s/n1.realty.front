@@ -1,0 +1,22 @@
+div.thumbnails-wrapper {
+	display: flex;
+	align-items: center;	
+	
+	flex-wrap: wrap;
+}
+
+div.thumbnails-item {
+	display: flex;
+	align-items: center;	
+	justify-content: center;
+
+	width: 80px;
+	height: 80px;
+	margin: 5px;
+	overflow: hidden;
+}
+
+div.thumbnails-wrapper img {
+	cursor: pointer;
+}
+
