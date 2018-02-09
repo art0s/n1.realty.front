@@ -121,12 +121,17 @@ class Objects extends Component {
 						{ this.state.renderRecords.map((obj) => (
 							<Link to={ `/view/${obj.dbname}/${obj.id}` } key={ obj.id }>
 								<span className="object">
-									<div className="object-header">{ String(CONSTANTS.SALES[obj.sale]) + ' - ' + Helper.formatDate(obj.modified_date) }</div>
-									<img src={ 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t' + obj.item } alt={ obj.id } />
+									<div className="image-wrapper">
+										<img src={ 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t' + obj.item } alt={ obj.id } />
+									</div>
 									<div className="object-footer">
+										<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[obj.sale]).toLowerCase() }
+										<br/>
+										<strong>Старт рекламы:</strong> { Helper.formatDate(obj.modified_date) }
+										<br/>
 										<strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }
 										<br/>
-										<strong>Комнат:</strong> { Helper.formatRoomValue(obj.room_quantity) }
+										<strong>Комнат:</strong> { obj.room_quantity }
 										<br/>
 										<strong>Стоимость:</strong> { Helper.formatPriceValue(obj) }
 									</div>

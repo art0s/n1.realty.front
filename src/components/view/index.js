@@ -74,16 +74,35 @@ class View extends Component {
 	        	}
 			});
 
+			let _adres = false;
+			if (this.state.data.obj.estate_type && this.state.data.obj.estate_type.toLowerCase() === 'квартира')
+			{
+				_adres = [];
+				if (this.state.data.obj.street) _adres.push('ул. ' + this.state.data.obj.street.trim());
+				if (this.state.data.obj.house_no) _adres.push('д. ' + this.state.data.obj.house_no);
+			}
+
 			return (
 				<div className="page-content">
-
-					<h2>{ String(CONSTANTS.SALES[this.state.data.obj.sale]) + ' - ' + Helper.formatDate(this.state.data.obj.modified_date) }</h2>
+					<br/>
 					<div>
+						<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }
+						<br/>
+						<strong>Старт рекламы:</strong> { Helper.formatDate(this.state.data.obj.modified_date) }
+						<br/>
 						<strong>Категория:</strong> { String(this.state.data.obj.estate_type).toLowerCase() }
 						<br/>
-						<strong>Комнат:</strong> { Helper.formatRoomValue(this.state.data.obj.room_quantity) }
+						<strong>Комнат:</strong> { this.state.data.obj.room_quantity }
 						<br/>
 						<strong>Стоимость:</strong> { Helper.formatPriceValue(this.state.data.obj) }
+						{
+							_adres && _adres.length
+							? (<span>
+								<br/>
+								<strong>Адрес:</strong> { _adres.join(', ') }
+								</span>)
+							: false
+						}
 					</div>
 					<br/>
 					<Gallery images={ _imgs } />
@@ -93,7 +112,7 @@ class View extends Component {
 						<strong>{ this.state.data.obj.agent_first_name + ' ' + this.state.data.obj.agent_patronym }</strong>
 						<br/>
 						Консультант
-						<h3>{ this.state.data.obj.agent_phone_mobile }</h3>
+						<h3><a href={ "tel:" + this.state.data.obj.agent_phone_mobile }>{ this.state.data.obj.agent_phone_mobile }</a></h3>
 					</div>
 
 				</div>
