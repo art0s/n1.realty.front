@@ -88,8 +88,6 @@ class View extends Component {
 					<div>
 						<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }
 						<br/>
-						<strong>Старт рекламы:</strong> { Helper.formatDate(this.state.data.obj.modified_date) }
-						<br/>
 						<strong>Категория:</strong> { String(this.state.data.obj.estate_type).toLowerCase() }
 						<br/>
 						<strong>Комнат:</strong> { this.state.data.obj.room_quantity }
@@ -103,6 +101,8 @@ class View extends Component {
 								</span>)
 							: false
 						}
+						<br/>
+						<strong>Старт рекламы:</strong> { Helper.formatDate(this.state.data.obj.modified_date) }
 					</div>
 					<br/>
 					<Gallery images={ _imgs } />

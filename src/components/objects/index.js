@@ -127,13 +127,13 @@ class Objects extends Component {
 									<div className="object-footer">
 										<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[obj.sale]).toLowerCase() }
 										<br/>
-										<strong>Старт рекламы:</strong> { Helper.formatDate(obj.modified_date) }
-										<br/>
 										<strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }
 										<br/>
 										<strong>Комнат:</strong> { obj.room_quantity }
 										<br/>
 										<strong>Стоимость:</strong> { Helper.formatPriceValue(obj) }
+										<br/>
+										<strong>Старт рекламы:</strong> { Helper.formatDate(obj.modified_date) }										
 									</div>
 								</span>
 							</Link>
