@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-export const CITY_ID = 'kyzyl';
-export const CITY_NAME = 'Кызыл';
-export const CITY_NAME_2 = 'Кызыла';
+export const CITY_ID = 'abakan';
+export const CITY_NAME = 'Абакан';
+export const CITY_NAME_2 = 'Абакана';
 export const PAGE_SIZE = 20;
 export const SALES = {
 	'0': 'Продажа',
