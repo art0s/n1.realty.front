@@ -245,7 +245,7 @@ class Contact extends Component {
 	//=========================================================================
 	render() {
 		return (
-			<div className="page-content">
+			<div className="page-content contact">
 
 				<div className="contact-block">
 					<h2>N1.realty - единый риелторский фид (ЕРФ)</h2>

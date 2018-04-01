@@ -12,9 +12,14 @@ a {
 	padding: 0 15px 15px;
 }
 
+.page-content.agencies {
+    padding-right: 20px;
+}
+
 .load-block {
 	width: 100%;	
 	margin-top: 100px;
+    padding-left: 20px;
 }
 .load-block img {
 	display: block;
@@ -50,30 +55,17 @@ a {
 
 
 .objects-wrapper {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    display: -webkit-box;
-    
-    -webkit-flex-flow: row wrap;
-    -ms-flex-flow: row wrap;
-    flex-flow: row wrap;
-        
-    -webkit-align-items: stretch;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-
     padding: 20px 0;
 }
 .objects-wrapper span.object {
     display: inline-block;
 	position: relative;
-	margin: 10px 20px 10px 0;
-	padding: 10px;
+	margin: 5px;
+	padding: 0;
     background: #ececec;
-    height: 185px;
+    height: 210px;
     transition: all 0.2s;
-    width: 250px;
+    width: 32%;
     cursor: pointer;
 }
 .objects-wrapper span.object:hover {
@@ -100,7 +92,7 @@ span.object > .image-wrapper {
     align-items: center;
 
     margin: 0;
-    padding: 0;
+    padding: 10px 0 0;
     width: 100%;
     height: 100px;
     vertical-align: middle;
@@ -110,6 +102,10 @@ span.object > .image-wrapper {
     display: block;
     margin: auto auto;
     max-height: 100px;
+}
+
+.load-more {
+    margin: 0 0 30px 5px;
 }
 
 
@@ -170,6 +166,7 @@ span.object > .image-wrapper {
     width: 500px;
     text-align: center;
     padding: 0 20px 10px 20px;
+    font-size: 90%;
 }
 .contact-block .info {
     width: 100%;
@@ -199,33 +196,6 @@ span.object > .image-wrapper {
     font-weight: 700;
 }
 
-@media (max-width: 767px) {
-	.appbar h1 { display: none }
-
-    .drawer-header-title {
-        display: block;
-    }
-
-    .objects-wrapper span.object {
-        width: calc(100% - 20px);
-        margin: 10px 0;
-    }
-
-    span.object div.object-footer {
-        padding-left: 10px;
-    }
-
-    .contact-block {
-        margin: 0 auto;
-        width: calc(100% - 20px);
-        padding: 0;
-    }
-
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-    .objects-wrapper span.object { width: 205px }
-}
 
 .cost-header {
     display: inline-block;
@@ -256,4 +226,107 @@ span.object > .image-wrapper {
 
 div.ReactModal__Overlay {
     z-index: 2000 !important;
+}
+
+
+.big-drawer-left {
+    display: none;
+    position: fixed;
+    float: left;
+    margin-top: 15px;
+    padding: 0 10px;
+    width: 200px;
+}
+
+.big-drawer-left .drawer-block {
+    font-size: 12px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+.big-drawer-left .radio-inline {
+    display: inline-block !important;
+    width: auto !important;    
+}
+.big-drawer-left .radio-inline:last-child {
+    margin-left: 20px;
+}
+
+.big-drawer-right {
+    display: none;
+    float: right;
+    margin-top: 15px;    
+    width: 140px;
+}
+
+.big-drawer-right > .btn {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    div.appbar > button,
+    .search-button,
+    .drawer-left,
+    .drawer-right {
+        display: none !important;
+    }
+
+    .big-drawer-left,
+    .big-drawer-right {
+        display: block;
+    }
+
+    .page-content {
+        margin-left: 220px;
+        margin-right: 140px;
+        padding: 0;
+    }
+
+    .page-content.agencies,
+    .page-content.contact,
+    .page-content.view {
+        margin-left: 20px;
+    }
+
+    .objects-wrapper {
+        padding-top: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .appbar h1 { display: none }
+
+    .drawer-header-title {
+        display: block;
+    }
+
+    .objects-wrapper span.object {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .contact-block {
+        margin: 0 auto;
+        width: calc(100% - 20px);
+        padding: 0;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 915px) {
+    .objects-wrapper span.object { width: 47% }
+
+    span.object div.object-footer {
+        padding-left: 10px;
+    }
+}
+
+@media (min-width: 916px) and (max-width: 1199px) {
+    .objects-wrapper span.object { width: 48% }
+}
+
+@media (max-width: 1199px) {
+    .big-drawer-right > .btn {
+        width: 90%;
+    }
 }

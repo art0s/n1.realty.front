@@ -43,7 +43,7 @@ class Agencies extends Component {
 		if (this.state.loading || !this.state.records.length)
 		{
 			return (
-				<div className="page-content">
+				<div className="page-content agencies">
 					<h2>Агентства представленные на портале</h2>
 
 					<div className="load-block">
@@ -55,7 +55,7 @@ class Agencies extends Component {
 		else
 		{
 			return (
-				<div className="page-content">
+				<div className="page-content agencies">
 					<h2>Агентства представленные на портале</h2>
 
 					<Table>

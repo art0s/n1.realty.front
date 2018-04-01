@@ -49,7 +49,7 @@ class View extends Component {
 		if (this.state.loading)
 		{
 			return (
-				<div className="page-content">
+				<div className="page-content view">
 					<div className="load-block">
 						<img src={ loadIcon } alt="Загрузка данных..." />
 					</div>
@@ -61,7 +61,7 @@ class View extends Component {
 			if (!this.state.data)
 			{
 				return (
-					<div className="page-content">
+					<div className="page-content view">
 						<div className="load-block">Объект не найден...</div>
 					</div>
 				);
@@ -83,7 +83,7 @@ class View extends Component {
 			}
 
 			return (
-				<div className="page-content">
+				<div className="page-content view">
 					<br/>
 					<div>
 						<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }

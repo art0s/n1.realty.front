@@ -18,6 +18,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import NavigationCloseIcon from 'material-ui/svg-icons/navigation/close';
 import NavigationCheckIcon from 'material-ui/svg-icons/navigation/check';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
@@ -69,11 +70,16 @@ class App extends Component {
 					Value: [0, 0],
 					withoutSum: true
 				}
-			}
+			},
+			// максимальная показанная страница в списке объектов
+			pageShown: 1
 		};
 
 		// заголовок
 		this.TITLE = 'N1.Realty - Недвижимость ' + CONSTANTS.CITY_NAME_2;
+
+		// установка максимальной показанной страницы
+		this.savePage = page => this.setState({ pageShown: page });
 	}
 
 	//=========================================================================
@@ -150,7 +156,7 @@ class App extends Component {
 		let _recs = this.filterRecords(_filter, 'init');
 
 		// меняем фильтр в состоянии
-		this.setState({ filter: _filter, filteredRecords: _recs });
+		this.setState({ pageShown: 1, filter: _filter, filteredRecords: _recs });
 	}
 
 	//=========================================================================
@@ -224,7 +230,7 @@ class App extends Component {
 		this.sortFilterLists(_filter);
 
 		// меняем состояние
-		this.setState({ filter: _filter, filteredRecords: _recs });
+		this.setState({ pageShown: 1, filter: _filter, filteredRecords: _recs });
 	}
 
 	//=========================================================================
@@ -492,15 +498,110 @@ class App extends Component {
 						
 					</Drawer>
 
+					{
+						this.props.location.pathname === '/' ?
+							<div className="big-drawer-left">
+								{/* ===== тип сделки - аренда или продажа ===== */}
+								{
+									<div className="drawer-block">
+										<RadioButtonGroup name="filterSale" valueSelected={ this.state.filter.sales.value } onChange={ (obj, val) => { this.changeFilter('sales', val) }}>
+										{
+											Object.keys(this.state.filter.sales.list).map(key => {
+												return <RadioButton
+													className="radio-inline"
+													key={ key }
+													value={ key }
+													label={ this.state.filter.sales.list[key] }
+												/>
+											})
+										}
+										</RadioButtonGroup>
+									</div>
+								}
+
+								{/* ===== тип объекта - квартира, дом и тд... ===== */}
+								{
+									this.state.filter.estates && this.state.filter.estates.list && Object.keys(this.state.filter.estates.list).length ?
+									<div className="drawer-block">
+										<RadioButtonGroup name="filterEstateType" valueSelected={ this.state.filter.estates.value } onChange={ (obj, val) => { this.changeFilter('estates', val) }}>
+										{
+											Object.keys(this.state.filter.estates.list).map(key => {
+												return <RadioButton
+													key={ key }
+													value={ key }
+													label={ this.state.filter.estates.list[key] }
+												/>
+											})
+										}
+										</RadioButtonGroup>
+									</div>
+									: false
+								}
+
+								{/* ===== количество комнат ===== */}
+								{
+									this.state.filter.rooms && this.state.filter.rooms.list && Object.keys(this.state.filter.rooms.list).length ?
+									<div className="drawer-block">
+										{
+											Object.keys(this.state.filter.rooms.list).map(key => {
+												return <Checkbox
+													key={ key }
+													label={ CONSTANTS.ROOMS[key] }
+													checked={ this.state.filter.rooms.value.indexOf(key) > -1 }
+													onCheck={ (obj, val) => this.changeFilter('rooms', { k: key, v: val }) }
+												/>
+											})
+										}
+									</div>
+									: false
+								}
+
+								{/* ===== диапазон сумм ===== */}
+								{
+									<div className="drawer-block">
+										<span className="cost-header">Стоимость:</span>
+										<div style={{ padding: '0 10px', marginBottom: 20 }}>
+											{ this.state.filteredRecords.length > 0 ?
+												<span className="cost-header" style={{ textAlign: 'center', fontWeight: 'bold', color: '#000 !important', marginBottom: 10 }}>
+													от { this.state.filter.price.Value[0] } до { this.state.filter.price.Value[1] }
+												</span>
+												: false
+											}
+											<Range
+												min={ this.state.filter.price.min }
+												max={ this.state.filter.price.max }
+												step={ this.state.filter.sales.value <= 0 ? 10 : 1000 }
+												value={ this.state.filter.price.Value }
+												onChange={ (val) => this.changePriceRange(val) }
+												onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
+											/>
+										</div>								
+										<Checkbox
+											className="without-sum"
+											key="withoutSum"
+											label="Показывать объекты без стоимости"
+											checked={ this.state.filter.price.withoutSum }
+											onCheck={ (obj, val) => this.changeFilter('price', { k: 'check', v: val }) }
+										/>
+									</div>
+								}
+							</div>
+							: false
+					}
+
+					<div className="big-drawer-right">
+						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/' } label="Объекты" onClick={ this.menuItemClickHandler('/') } />
+						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/agencies' } label="Агентства" onClick={ this.menuItemClickHandler('/agencies') } />
+						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/contact' } label="Контакты" onClick={ this.menuItemClickHandler('/contact') } />
+					</div>
+
 					<Switch>						
 						<Route exact path="/view/:org/:id" component={ View } />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
-						<Route exact path="/" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
-						<Route exact path="/:page" component={(props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } />} />
+						<Route exact path="/" component={ (props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } savePage={ this.savePage } currentPage={ this.state.pageShown } /> } />
 						<Route component={ NotFound } />
 					</Switch>
-
 			</div>
 			</MuiThemeProvider>
 		);
