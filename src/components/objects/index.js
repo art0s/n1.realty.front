@@ -35,6 +35,11 @@ class Objects extends Component {
 		// если уже все страницы были загружены - ничего не делаем
 		if (this.props.currentPage >= this.maxPage()) return;
 
+		// запрет на скролл
+		let x = window.scrollX;
+		let y = window.scrollY;
+		window.onscroll = () => window.scrollTo(x, y);
+
 		// инкрементируем страницу - переменная в состоянии родителя
 		this.props.savePage(this.props.currentPage + 1);
 	}
@@ -94,7 +99,7 @@ class Objects extends Component {
 										<br/>
 										<strong>Комнат:</strong> { obj.room_quantity }
 										<br/>
-										<strong>Стоимость:</strong> { Helper.formatPriceValue(obj) }
+										<strong>Договорная стоимость:</strong> { Helper.formatPriceValue(obj) }
 										<br/>
 										<strong>Старт рекламы:</strong> { Helper.formatDate(obj.modified_date) }										
 									</div>

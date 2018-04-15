@@ -23,6 +23,11 @@ import NavigationCloseIcon from 'material-ui/svg-icons/navigation/close';
 import NavigationCheckIcon from 'material-ui/svg-icons/navigation/check';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from 'material-ui/Checkbox';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+//import LocationOnIcon from 'material-ui/svg-icons/communication/location-on';
+import HomeIcon from 'material-ui/svg-icons/action/home';
+import ContactIcon from 'material-ui/svg-icons/communication/contact-mail';
+import AgenciesIcon from 'material-ui/svg-icons/places/business-center';
 ///////////////////////////////////////////////////////////////////////////////
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -72,7 +77,9 @@ class App extends Component {
 				}
 			},
 			// максимальная показанная страница в списке объектов
-			pageShown: 1
+			pageShown: 1,
+			// нажняя навигация
+			bottomNavigationValue: 0
 		};
 
 		// заголовок
@@ -80,6 +87,21 @@ class App extends Component {
 
 		// установка максимальной показанной страницы
 		this.savePage = page => this.setState({ pageShown: page });
+	}
+
+	//=========================================================================
+	componentWillMount() {
+		// вычислим активный пункт нижнего тулбара
+		// так как могут сразу пройти по проямой
+		// ссылке например на страницу контактов
+		let _idx = 0;
+		if (this.props.history.location && this.props.history.location.pathname)
+		{
+			if (~this.props.history.location.pathname.indexOf('agencies')) _idx = 1;
+			else if (~this.props.history.location.pathname.indexOf('contact')) _idx = 2;
+		}
+
+		this.setState({ bottomNavigationValue: _idx });
 	}
 
 	//=========================================================================
@@ -101,9 +123,28 @@ class App extends Component {
 	}
 
 	//=========================================================================
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
+		// всегда делаем сброс запрета на скролл
+		setTimeout(() => {
+			window.onscroll = () => {}
+		}, 100);		
 		// отключаем свайп у парвой панели
 		this._rightDrawer.disableSwipeHandling();
+
+		// проверяем - если изменился маршрут роутера
+		if (this.props.location !== prevProps.location)
+		{
+			// встаем на верх страницы
+			window.scrollTo(0, 0);
+
+			// вычислим активный пункт нижнего тулбара
+			// так как могут сразу пройти по прямой
+			// ссылке например на страницу контактов
+			let _idx = 0;
+			if (~this.props.location.pathname.indexOf('agencies')) _idx = 1;
+			else if (~this.props.location.pathname.indexOf('contact')) _idx = 2;
+			this.setState({ bottomNavigationValue: _idx });
+		}
 	}
 
 	//=========================================================================
@@ -365,6 +406,14 @@ class App extends Component {
 	}
 
 	//=========================================================================
+	handleBottomNavigation(index) {
+		this.setState({ bottomNavigationValue: index });
+		if (index === 0) this.props.history.push('/');
+		else if (index === 1) this.props.history.push('/agencies');
+		else if (index === 2) this.props.history.push('/contact');
+	}
+
+	//=========================================================================
 	render() {
 		return (
 			<MuiThemeProvider>
@@ -602,6 +651,29 @@ class App extends Component {
 						<Route exact path="/" component={ (props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } savePage={ this.savePage } currentPage={ this.state.pageShown } /> } />
 						<Route component={ NotFound } />
 					</Switch>
+
+
+					<div className="footer">
+						<BottomNavigation selectedIndex={ this.state.bottomNavigationValue }>
+							<BottomNavigationItem
+								label="Объекты"
+								icon={ <HomeIcon /> }
+								onClick={ () => this.handleBottomNavigation(0) }
+							/>
+							<BottomNavigationItem
+								label="Агентства"
+								icon={ <AgenciesIcon /> }
+								onClick={ () => this.handleBottomNavigation(1) }
+							/>
+							<BottomNavigationItem
+								label="Контакты"
+								icon={ <ContactIcon /> }
+								onClick={ () => this.handleBottomNavigation(2) }
+							/>
+						</BottomNavigation>
+
+						<div className="copyright">N1.Realty &copy; 2017 - { new Date().getFullYear() }</div>
+					</div>
 			</div>
 			</MuiThemeProvider>
 		);
