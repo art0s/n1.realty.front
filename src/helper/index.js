@@ -17,7 +17,7 @@ const Helper = {
 	//=========================================================================
 	formatPriceValue(obj) {
 		// нормализуем значение стоимости объекта
-		if (!obj || !obj.sale) return 'без стоимости';
+		if (!obj || !obj.sale) return 'договорная';
 
 		let _price = false;
 		let _ed = 'руб.';
@@ -33,7 +33,7 @@ const Helper = {
 			_price = parseFloat(obj.rent_price_month);
 		}
 
-		if (isNaN(_price)) return 'без стоимости';
+		if (isNaN(_price)) return 'договорная';
 
 		return _price.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + _ed;
 	},
@@ -46,6 +46,24 @@ const Helper = {
 		if (isNaN(_roomValue) || _roomValue <= 0) _room = '?';
 		if (_roomValue >= 4) _room = '4+';
 		return _room;
+	},
+
+	//=========================================================================
+	formatAdresValue(obj) {
+		if (!obj || !obj.street) return false;
+
+		let _adres = [];
+		_adres.push('ул. ' + obj.street.trim());
+		if (obj.house_no) _adres.push('д. ' + obj.house_no);
+
+		return _adres.join(', ');
+	},
+
+	//=========================================================================
+	formatSquareValue(obj) {
+		if (!obj || !obj.total_floor_space) return false;
+
+		return String(obj.total_floor_space).trim() + ' кв.м.';
 	}
 
 	//=========================================================================

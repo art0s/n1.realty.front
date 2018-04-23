@@ -5,7 +5,7 @@ import * as CONSTANTS from '../../config';
 import loadIcon from '../../asset/img/loading-hor16.gif';
 import RaisedButton from 'material-ui/RaisedButton';
 import Helper from '../../helper';
-import './style.scss';
+import './style.css';
 ///////////////////////////////////////////////////////////////////////////////
 class Objects extends Component {
 	//=========================================================================
@@ -93,13 +93,25 @@ class Objects extends Component {
 										<img src={ 'https://n1.realty/ivn/' + CONSTANTS.CITY_ID + '/img_thumb/t' + obj.item } alt={ obj.id } />
 									</div>
 									<div className="object-footer">
-										<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[obj.sale]).toLowerCase() }
-										<br/>
-										<strong>Категория:</strong> { String(obj.estate_type).toLowerCase() }
-										<br/>
+										<div className="mobile-only">
+											<strong>Сделка:</strong> { String(CONSTANTS.SALES[obj.sale]).toLowerCase() }
+											<br/>
+											<strong>Объект:</strong> { String(obj.estate_type).toLowerCase() }										
+											<br/>
+										</div>
 										<strong>Комнат:</strong> { obj.room_quantity }
+										{
+											obj.total_floor_space
+											? (<span><br/><strong>Площадь:</strong> { Helper.formatSquareValue(obj) }</span>)
+											: false
+										}
 										<br/>
-										<strong>Договорная стоимость:</strong> { Helper.formatPriceValue(obj) }
+										<strong>Стоимость:</strong> { Helper.formatPriceValue(obj) }
+										{
+											obj.street
+											? (<span><br/><strong>Адрес:</strong> { Helper.formatAdresValue(obj) }</span>)
+											: false
+										}
 										<br/>
 										<strong>Старт рекламы:</strong> { Helper.formatDate(obj.modified_date) }										
 									</div>

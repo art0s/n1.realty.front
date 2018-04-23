@@ -1,8 +1,8 @@
 div.thumbnails-wrapper {
 	display: flex;
-	align-items: center;	
-	
+	align-items: center;
 	flex-wrap: wrap;
+	margin: 10px 10px 20px 20px;
 }
 
 div.thumbnails-item {
@@ -10,13 +10,19 @@ div.thumbnails-item {
 	align-items: center;	
 	justify-content: center;
 
-	width: 80px;
-	height: 80px;
-	margin: 5px;
+	max-width: 70px;
+	height: 70px;
+	margin: 10px 20px 10px 0;
 	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	border-radius: 6px;
 }
 
 div.thumbnails-wrapper img {
 	cursor: pointer;
+	height: 100%;
 }
 
+@media (max-width: 767px) {
+	div.thumbnails-wrapper { justify-content: center }
+}

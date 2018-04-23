@@ -672,7 +672,6 @@ class App extends Component {
 							/>
 						</BottomNavigation>
 
-						<div className="copyright">N1.Realty &copy; 2017 - { new Date().getFullYear() }</div>
 					</div>
 			</div>
 			</MuiThemeProvider>

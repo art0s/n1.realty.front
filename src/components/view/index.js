@@ -25,7 +25,7 @@ class View extends Component {
 	}
 
 	//=========================================================================
-	componentDidMount() {
+	componentWillMount() {
 		// получим ID объекта и название базы из URL
 		let objId = this.props.match.params.id === undefined ? false : parseInt(this.props.match.params.id, 10);
 		if (isNaN(objId) || objId <= 0) objId = false;
@@ -75,44 +75,48 @@ class View extends Component {
 			});
 
 			let _adres = false;
-			if (this.state.data.obj.estate_type && this.state.data.obj.estate_type.toLowerCase() === 'квартира')
-			{
-				_adres = [];
-				if (this.state.data.obj.street) _adres.push('ул. ' + this.state.data.obj.street.trim());
-				if (this.state.data.obj.house_no) _adres.push('д. ' + this.state.data.obj.house_no);
-			}
+			if (this.state.data.obj.estate_type && this.state.data.obj.estate_type.toLowerCase().indexOf('кварт') > -1)
+				_adres = Helper.formatAdresValue(this.state.data.obj);
+
+			let _square = Helper.formatSquareValue(this.state.data.obj);
 
 			return (
 				<div className="page-content view">
-					<br/>
-					<div>
-						<strong>Тип сделки:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }
-						<br/>
-						<strong>Категория:</strong> { String(this.state.data.obj.estate_type).toLowerCase() }
-						<br/>
-						<strong>Комнат:</strong> { this.state.data.obj.room_quantity }
-						<br/>
-						<strong>Стоимость:</strong> { Helper.formatPriceValue(this.state.data.obj) }
-						{
-							_adres && _adres.length
-							? (<span>
-								<br/>
-								<strong>Адрес:</strong> { _adres.join(', ') }
-								</span>)
-							: false
-						}
-						<br/>
-						<strong>Старт рекламы:</strong> { Helper.formatDate(this.state.data.obj.modified_date) }
-					</div>
-					<br/>
+
 					<Gallery images={ _imgs } />
 
-					<div className="agent-block">
-						<img src={ this.imgAgent + this.state.data.obj.agent_photo } alt="" />
-						<strong>{ this.state.data.obj.agent_first_name + ' ' + this.state.data.obj.agent_patronym }</strong>
-						<br/>
-						Консультант
-						<h3><a href={ "tel:" + this.state.data.obj.agent_phone_mobile }>{ this.state.data.obj.agent_phone_mobile }</a></h3>
+					<div className="info">
+						<div className="object-block">
+							<span><strong>Сделка:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }</span>
+							<span><strong>Объект:</strong> { String(this.state.data.obj.estate_type).toLowerCase() }</span>
+							<span><strong>Комнат:</strong> { this.state.data.obj.room_quantity }</span>
+							{
+								_square
+								? (<span><strong>Площадь:</strong> { _square }</span>)
+								: false
+							}
+							<span><strong>Стоимость:</strong> { Helper.formatPriceValue(this.state.data.obj) }</span>
+							{
+								_adres
+								? (<span><strong>Адрес:</strong> { _adres }</span>)
+								: false
+							}
+							<span><strong>Старт рекламы:</strong> { Helper.formatDate(this.state.data.obj.modified_date) }</span>
+						</div>
+
+						<div className="agent-block">
+							{
+								this.state.data.obj.agent_photo
+								? (<img src={ this.imgAgent + this.state.data.obj.agent_photo } alt="" />)
+								: false	
+							}							
+							<div>
+								<strong>{ this.state.data.obj.agent_first_name + ' ' + this.state.data.obj.agent_patronym }</strong>
+								<br/>
+								Консультант
+								<h3><a href={ "tel:" + this.state.data.obj.agent_phone_mobile }>{ this.state.data.obj.agent_phone_mobile }</a></h3>
+							</div>
+						</div>
 					</div>
 
 				</div>
