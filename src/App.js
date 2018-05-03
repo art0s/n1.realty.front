@@ -28,6 +28,8 @@ import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigati
 import HomeIcon from 'material-ui/svg-icons/action/home';
 import ContactIcon from 'material-ui/svg-icons/communication/contact-mail';
 import AgenciesIcon from 'material-ui/svg-icons/places/business-center';
+import MapIcon from 'material-ui/svg-icons/maps/place';
+import TableIcon from 'material-ui/svg-icons/navigation/apps';
 ///////////////////////////////////////////////////////////////////////////////
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -76,6 +78,8 @@ class App extends Component {
 					withoutSum: true
 				}
 			},
+			// режим показа объектов
+			viewMode: 'map',
 			// максимальная показанная страница в списке объектов
 			pageShown: 1,
 			// нажняя навигация
@@ -100,13 +104,13 @@ class App extends Component {
 			if (~this.props.history.location.pathname.indexOf('agencies')) _idx = 1;
 			else if (~this.props.history.location.pathname.indexOf('contact')) _idx = 2;
 		}
-
+		// установка активного тулбара
 		this.setState({ bottomNavigationValue: _idx });
 	}
 
 	//=========================================================================
 	componentDidMount() {
-		// отключаем свайп у парвой панели
+		// отключаем свайп у правой панели
 		this._rightDrawer.disableSwipeHandling();
 
 		// запрос списка объектов
@@ -128,7 +132,7 @@ class App extends Component {
 		setTimeout(() => {
 			window.onscroll = () => {}
 		}, 100);		
-		// отключаем свайп у парвой панели
+		// отключаем свайп у правой панели
 		this._rightDrawer.disableSwipeHandling();
 
 		// проверяем - если изменился маршрут роутера
@@ -455,6 +459,30 @@ class App extends Component {
 						<h2 className="drawer-header">Фильтр</h2>
 						<FloatingActionButton secondary={ true } className="drawer-button" mini={ true } onClick={ () => this.setState({ openRightDrawer: false }) }><NavigationCloseIcon /></FloatingActionButton>
 
+						{/* ===== вид таблицы - map, table ===== */}
+						{
+							<div className="drawer-block">
+								<RadioButtonGroup name="modeView" valueSelected={ this.state.viewMode } onChange={ (obj, val) => { this.setState({ viewMode: val }) }}>
+									<RadioButton
+										className="radio-inline"
+										key="view-mode-map"
+										value="map"
+										label="Карта"
+										checkedIcon={ <MapIcon /> }
+        								uncheckedIcon={ <MapIcon /> }
+									/>
+									<RadioButton
+										className="radio-inline"
+										key="view-mode-table"
+										value="table"
+										label="Таблица"
+										checkedIcon={ <TableIcon /> }
+        								uncheckedIcon={ <TableIcon /> }
+									/>
+								</RadioButtonGroup>
+							</div>
+						}
+
 						{/* ===== тип сделки - аренда или продажа ===== */}
 						{
 							<div className="drawer-block">
@@ -550,6 +578,30 @@ class App extends Component {
 					{
 						this.props.location.pathname === '/' ?
 							<div className="big-drawer-left">
+								{/* ===== вид таблицы - map, table ===== */}
+								{
+									<div className="drawer-block">
+										<RadioButtonGroup name="modeView" valueSelected={ this.state.viewMode } onChange={ (obj, val) => { this.setState({ viewMode: val }) }}>
+											<RadioButton
+												className="radio-inline"
+												key="view-mode-map"
+												value="map"
+												label="Карта"
+												checkedIcon={ <MapIcon /> }
+        										uncheckedIcon={ <MapIcon /> }
+											/>
+											<RadioButton
+												className="radio-inline"
+												key="view-mode-table"
+												value="table"
+												label="Таблица"
+												checkedIcon={ <TableIcon /> }
+        										uncheckedIcon={ <TableIcon /> }
+											/>
+										</RadioButtonGroup>
+									</div>
+								}
+
 								{/* ===== тип сделки - аренда или продажа ===== */}
 								{
 									<div className="drawer-block">
@@ -648,7 +700,17 @@ class App extends Component {
 						<Route exact path="/view/:org/:id" component={ View } />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
-						<Route exact path="/" component={ (props) => <Objects {...props} loading={ this.state.loading } records={ this.state.filteredRecords } savePage={ this.savePage } currentPage={ this.state.pageShown } /> } />
+						<Route exact path="/"
+							component={ (props) =>
+								<Objects {...props}
+									viewMode={ this.state.viewMode }
+									loading={ this.state.loading }
+									records={ this.state.filteredRecords }
+									savePage={ this.savePage }
+									currentPage={ this.state.pageShown }
+								/>
+							}
+						/>
 						<Route component={ NotFound } />
 					</Switch>
 

@@ -23,5 +23,24 @@ export const ROOMS = {
 	'3': 'Три комнаты',
 	'4': 'Четыре и более комнат'
 };
+
+export const YandexMAP = {
+	abakan: {
+		state: {
+			center: [53.72,91.44],
+			zoom: 13,
+			controls: ['geolocationControl', 'zoomControl', 'fullscreenControl', 'rulerControl'],
+			behaviors: ['drag', 'dblClickZoom']
+		}
+	},
+	kyzyl: {
+		state: {
+			center: [51.72,94.44],
+			zoom: 13,
+			controls: ['geolocationControl', 'zoomControl', 'fullscreenControl', 'rulerControl'],
+			behaviors: ['drag', 'dblClickZoom']
+		}
+	}
+}
 export const API_URL = 'https://api.n1.realty';
 ///////////////////////////////////////////////////////////////////////////////
