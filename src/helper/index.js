@@ -1,4 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
+import * as CONSTANTS from '../config';
+///////////////////////////////////////////////////////////////////////////////
 const Helper = {
 	//=========================================================================
 	strCapitalize(str) {
@@ -64,6 +66,24 @@ const Helper = {
 		if (!obj || !obj.total_floor_space) return false;
 
 		return String(obj.total_floor_space).trim() + ' кв.м.';
+	},
+
+	//=========================================================================
+	balloonInfo(obj) {
+		if (!obj) return '';
+
+		let _room = obj.room_quantity ? String(obj.room_quantity) : '?';
+		let _roomValue = parseInt(_room, 10);
+		if (isNaN(_roomValue) || _roomValue <= 0) _room = '';
+		else if (_roomValue === 1) _room = ', одна комната';
+		else if (_roomValue === 2) _room = ', две комнаты';
+		else if (_roomValue === 3) _room = ', три комнаты';
+		else if (_roomValue >= 4) _room = ', 4 и более комнат';
+
+		let answer = '<span class="balloon-link" data-path="/view/' + obj.dbname + '/' + obj.id + '">' + CONSTANTS.SALES_BALLOON[obj.sale] + ' ' + String(obj.estate_type).toLowerCase() + ' (' + this.formatSquareValue(obj) + _room + ')</span>';
+		answer += '<br>' + this.formatPriceValue(obj);
+
+		return answer;
 	}
 
 	//=========================================================================

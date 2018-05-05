@@ -282,6 +282,22 @@ div.ReactModal__Overlay {
     font-size: 11px;
 }
 
+span.balloon-link {
+    color: #00bcd4;
+    font-weight: bold;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+span.balloon-link:hover {
+    color: #333;
+}
+
+div.clusterer-balloon {
+    padding: 10px 0;
+    border-top: 1px solid #ccc;
+}
+
 @media (min-width: 768px) {
     div.appbar > button,
     .search-button,

@@ -9,6 +9,12 @@ export const SALES = {
 	'2': 'Покупка',
 	'3': 'Съем в аренду'
 };
+export const SALES_BALLOON = {
+	'0': 'Продается',
+	'1': 'Сдается в аренд4',
+	'2': 'Покупается',
+	'3': 'Снимается в аренду'
+};
 export const ESTATES = {
 	'Квартира': 'Квартира',
 	'Жилье на земле': 'Жилье на земле',
@@ -31,14 +37,20 @@ export const YandexMAP = {
 			zoom: 13,
 			controls: ['geolocationControl', 'zoomControl', 'fullscreenControl', 'rulerControl'],
 			behaviors: ['drag', 'dblClickZoom']
+		},
+		options: {
+			maxZoom: 16
 		}
 	},
 	kyzyl: {
 		state: {
 			center: [51.72,94.44],
-			zoom: 13,
+			zoom: 12,
 			controls: ['geolocationControl', 'zoomControl', 'fullscreenControl', 'rulerControl'],
 			behaviors: ['drag', 'dblClickZoom']
+		},
+		options: {
+			maxZoom: 16
 		}
 	}
 }

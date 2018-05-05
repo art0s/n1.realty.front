@@ -1,12 +1,16 @@
 .yandex-map-container {
-	padding: 10px 20px 0 10px !important
+	height: 740px !important;
+	min-height: 770px !important;
+	padding: 10px 20px 20px 10px !important	
 }
 
 .mobile-only { display: none }
 
 @media (max-width: 767px) {
 	.yandex-map-container {
-		padding: 10px 10px 0 10px !important
+		height: 540px !important;
+		min-height: 570px !important;	
+		padding: 10px !important
 	}
 	.mobile-only { display: block }
 }

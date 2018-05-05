@@ -1,12 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { YMaps, Map, Placemark } from 'react-yandex-maps';
+import { YMaps, Map } from 'react-yandex-maps';
 import * as CONSTANTS from '../../config';
 import loadIcon from '../../asset/img/loading-hor16.gif';
 import RaisedButton from 'material-ui/RaisedButton';
 import Helper from '../../helper';
 import './style.css';
+
 ///////////////////////////////////////////////////////////////////////////////
 class Objects extends Component {
 	//=========================================================================
@@ -20,12 +21,31 @@ class Objects extends Component {
 
 		// возвращает максимальное количество страниц
 		this.maxPage = () => Math.ceil(this.props.records.length / CONSTANTS.PAGE_SIZE);
+
+		// обработчик кликов для всего документа
+		this.clickEvent = e => {
+			// если кликнули по ссылке в балуне
+			if (e.target.tagName === 'SPAN' && e.target.className === 'balloon-link' &&
+				e.target.dataset && e.target.dataset.path)
+			{
+				this.props.history.push(e.target.dataset.path)
+				return false;
+			}
+		}
 	}
 
 	//=========================================================================
 	componentDidMount() {
+		// обработчик кликов
+		document.addEventListener('click', this.clickEvent);
 		// грузим данные с учетом страницы
 		this.loadData();
+	}
+
+	//=========================================================================
+	componentWillUnmount() {
+		// уберем обработчик
+		document.removeEventListener('click', this.clickEvent);
 	}
 
 	//=========================================================================
@@ -43,12 +63,17 @@ class Objects extends Component {
 
 		// инкрементируем страницу - переменная в состоянии родителя
 		this.props.savePage(this.props.currentPage + 1);
+
+		this.Ymaps = null;
 	}
 	
 	//=========================================================================
 	loadData() {
 		// грузим данные
-		this.setState({ renderRecords: this.props.records.slice(0, this.props.currentPage * CONSTANTS.PAGE_SIZE) });
+		if (this.props.viewMode === 'table')
+			this.setState({ renderRecords: this.props.records.slice(0, this.props.currentPage * CONSTANTS.PAGE_SIZE) });
+		else
+			this.setState({ renderRecords: this.props.records });
 	}
 
 	//=========================================================================
@@ -59,6 +84,59 @@ class Objects extends Component {
 			// подгрузим данные
 			this.loadData();
 		}
+	}
+
+	//=========================================================================
+	initYmaps(ymaps) {
+		// запишем инстанс яндекс карт
+		if (!ymaps) return;
+		// только когда он будет инициализирован
+		this.Ymaps = ymaps;
+	}
+
+	//=========================================================================
+	createClusterer(map) {
+		// добавляем свой кластерер
+		if (!map || !this.Ymaps) return;
+
+		// свой макет балуна
+		let customBalloonContentLayout = this.Ymaps.templateLayoutFactory.createClass([
+			'<h3>{{ properties.geoObjects[0].properties.balloonContentHeader|raw }}</h3>',
+			'{% for geoObject in properties.geoObjects %}',
+			'<div class="clusterer-balloon">{{ geoObject.properties.balloonContentBody | raw }}</div>',
+			'{% endfor %}',
+		].join(''));
+
+		// кластеризатор - группирует метки
+		let clusterer = new this.Ymaps.Clusterer({
+			preset: 'islands#invertedVioletClusterIcons',
+			clusterOpenBalloonOnClick: true,
+			clusterBalloonContentLayout: customBalloonContentLayout
+		});
+
+		// метки
+		let placemarks = [];
+		this.state.renderRecords.forEach((item, idx) => {
+			let placemark = new this.Ymaps.Placemark(
+				[
+					parseFloat(item.latitude),
+					parseFloat(item.longitude)
+				],
+				{
+					balloonContentHeader: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(item),
+					balloonContentBody: Helper.balloonInfo(item),
+					placemarkId: idx
+				},
+				{
+					preset: 'islands#violetCircleDotIcon'
+				}
+			);
+			placemarks.push(placemark);
+		});
+
+		// собираем все на карте
+		clusterer.add(placemarks);
+		map.geoObjects.add(clusterer);
 	}
 
 	//=========================================================================
@@ -99,7 +177,7 @@ class Objects extends Component {
 											<div className="mobile-only">
 												<strong>Сделка:</strong> { String(CONSTANTS.SALES[obj.sale]).toLowerCase() }
 												<br/>
-												<strong>Объект:</strong> { String(obj.estate_type).toLowerCase() }										
+												<strong>Объект:</strong> { String(obj.estate_type).toLowerCase() }
 												<br/>
 											</div>
 											<strong>Комнат:</strong> { obj.room_quantity }
@@ -132,31 +210,21 @@ class Objects extends Component {
 				);
 			// вид - карта
 			else
+			{
 				return (
 					<div className="page-content yandex-map-container">
-						<YMaps width={ '100%' }>
-							<Map state={ CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].state } width={ '100%' } height={ '580px' }>
-
-								<Placemark
-									geometry={{
-										coordinates: [55.751574, 37.573856]
-									}}
-									properties={{
-										hintContent: 'Собственный значок метки',
-										balloonContent: 'Это красивая метка'
-									}}
-									options={{
-										iconLayout: 'default#image',
-										iconImageHref: 'images/myIcon.gif',
-										iconImageSize: [30, 42],
-										iconImageOffset: [-3, -42]
-									}}
-							  />
-
-							</Map>
+						<YMaps onApiAvaliable={ ymaps => this.initYmaps(ymaps) } >
+							<Map
+								options={ CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].options }
+								state={ CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].state }
+								width={ '100%' }
+								height={ '100%' }
+								instanceRef={ map => this.createClusterer(map) }
+							/>
 						</YMaps>
 					</div>
 				);
+			}
 		}
 	}
 
