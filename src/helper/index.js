@@ -22,17 +22,17 @@ const Helper = {
 		if (!obj || !obj.sale) return 'договорная';
 
 		let _price = false;
-		let _ed = 'руб.';
+		let _ed = 'тыс. руб.';
 		// если это продажа
 		if (String(obj.sale) === '0')
 		{
 			_price = parseFloat(obj.price);
-			_ed = 'тыс. руб.';
 		}
 		// если это аренда
 		else if (String(obj.sale) === '1')
 		{
 			_price = parseFloat(obj.rent_price_month);
+			if (_price > 999) _ed = 'руб.';
 		}
 
 		if (isNaN(_price)) return 'договорная';
@@ -70,18 +70,38 @@ const Helper = {
 
 	//=========================================================================
 	balloonInfo(obj) {
+		// если не задан объект
 		if (!obj) return '';
 
+		// количество комнат
 		let _room = obj.room_quantity ? String(obj.room_quantity) : '?';
 		let _roomValue = parseInt(_room, 10);
 		if (isNaN(_roomValue) || _roomValue <= 0) _room = '';
-		else if (_roomValue === 1) _room = ', одна комната';
-		else if (_roomValue === 2) _room = ', две комнаты';
-		else if (_roomValue === 3) _room = ', три комнаты';
-		else if (_roomValue >= 4) _room = ', 4 и более комнат';
+		else if (_roomValue === 1) _room = 'одна комната';
+		else if (_roomValue === 2) _room = 'две комнаты';
+		else if (_roomValue === 3) _room = 'три комнаты';
+		else if (_roomValue >= 4) _room = '4 и более комнат';
 
-		let answer = '<span class="balloon-link" data-path="/view/' + obj.dbname + '/' + obj.id + '">' + CONSTANTS.SALES_BALLOON[obj.sale] + ' ' + String(obj.estate_type).toLowerCase() + ' (' + this.formatSquareValue(obj) + _room + ')</span>';
-		answer += '<br>' + this.formatPriceValue(obj);
+		// данные в скобках - площадь и количество комнат
+		let data = '';
+		if (obj.total_floor_space) data = this.formatSquareValue(obj);
+		if (_room !== '')
+		{
+			if (data === '') data = _room;
+			else data += ', ' + _room;
+		}
+		if (data !== '') data = ' (' + data + ')';
+
+		let answer = '<span class="balloon-link" data-path="/view/' + obj.dbname + '/' + obj.id + '">' +
+			CONSTANTS.SALES_BALLOON[obj.sale] + ' ' +
+			String(obj.estate_type).toLowerCase() +
+			data +
+			'</span>';
+
+		let cost = this.formatPriceValue(obj);
+		if (cost === 'договорная') cost = 'Стоимость договорная';
+
+		answer += '<br>' + cost;
 
 		return answer;
 	}
