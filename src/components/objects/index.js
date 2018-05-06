@@ -117,21 +117,24 @@ class Objects extends Component {
 		// метки
 		let placemarks = [];
 		this.state.renderRecords.forEach((item, idx) => {
-			let placemark = new this.Ymaps.Placemark(
-				[
-					parseFloat(item.latitude),
-					parseFloat(item.longitude)
-				],
-				{
-					balloonContentHeader: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(item),
-					balloonContentBody: Helper.balloonInfo(item),
-					placemarkId: idx
-				},
-				{
-					preset: 'islands#violetCircleDotIcon'
-				}
-			);
-			placemarks.push(placemark);
+			if (item.latitude && item.longitude)
+			{
+				let placemark = new this.Ymaps.Placemark(
+					[
+						parseFloat(item.latitude),
+						parseFloat(item.longitude)
+					],
+					{
+						balloonContentHeader: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(item),
+						balloonContentBody: Helper.balloonInfo(item),
+						placemarkId: idx
+					},
+					{
+						preset: 'islands#violetCircleDotIcon'
+					}
+				);
+				placemarks.push(placemark);
+			}
 		});
 
 		// собираем все на карте
