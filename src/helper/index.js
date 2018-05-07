@@ -69,7 +69,7 @@ const Helper = {
 	},
 
 	//=========================================================================
-	balloonInfo(obj) {
+	balloonInfo(obj, withoutLink) {
 		// если не задан объект
 		if (!obj) return '';
 
@@ -100,6 +100,8 @@ const Helper = {
 
 		let cost = this.formatPriceValue(obj);
 		if (cost === 'договорная') cost = 'Стоимость договорная';
+
+		if (withoutLink === 'withoutLink') return cost;
 
 		answer += '<br>' + cost;
 

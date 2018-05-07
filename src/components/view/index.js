@@ -1,5 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 import React, { Component } from 'react';
+import { YMaps, Map, Placemark } from 'react-yandex-maps';
 import loadIcon from '../../asset/img/loading-hor16.gif';
 ///////////////////////////////////////////////////////////////////////////////
 import axios from 'axios';
@@ -42,6 +43,40 @@ class View extends Component {
 			.then(() => {
 				this.setState({ loading: false });
 			});
+	}
+
+	//=========================================================================
+	renderMap() {
+		if (this.state.data.obj.latitude && this.state.data.obj.longitude)
+		{
+			let mapState = Object.assign({}, CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].state);
+			mapState['zoom'] = 16;
+			mapState['center'] = [parseFloat(this.state.data.obj.latitude), parseFloat(this.state.data.obj.longitude)];
+
+			return (
+				<div className="view-object-map">
+				<YMaps>
+					<Map
+						options={ CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].options }
+						state={ mapState }
+						width={ '100%' }
+						height={ '100%' }
+					>
+						<Placemark
+							geometry={{ coordinates: mapState['center'] }}
+							properties={{
+								balloonContentHeader: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(this.state.data.obj),
+								balloonContentBody: Helper.balloonInfo(this.state.data.obj, 'withoutLink')
+							}}
+							options={{ preset: 'islands#violetCircleDotIcon' }}
+						/>
+					</Map>
+				</YMaps>
+				</div>
+			);
+		}
+
+		return false;
 	}
 
 	//=========================================================================
@@ -118,6 +153,8 @@ class View extends Component {
 							</div>
 						</div>
 					</div>
+
+					{ this.renderMap() }
 
 				</div>
 			);

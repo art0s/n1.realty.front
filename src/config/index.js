@@ -53,6 +53,8 @@ export const YandexMAP = {
 			maxZoom: 16
 		}
 	}
-}
+};
+
 export const API_URL = 'https://api.n1.realty';
+export const API_TOKEN = 'Od9Jkq;03kj.Jk2/#3j4$,5';
 ///////////////////////////////////////////////////////////////////////////////

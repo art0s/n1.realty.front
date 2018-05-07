@@ -24,7 +24,6 @@ import NavigationCheckIcon from 'material-ui/svg-icons/navigation/check';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Checkbox from 'material-ui/Checkbox';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
-//import LocationOnIcon from 'material-ui/svg-icons/communication/location-on';
 import HomeIcon from 'material-ui/svg-icons/action/home';
 import ContactIcon from 'material-ui/svg-icons/communication/contact-mail';
 import AgenciesIcon from 'material-ui/svg-icons/places/business-center';
@@ -41,6 +40,9 @@ class App extends Component {
 	//=========================================================================
 	constructor(props) {
 		super(props);
+
+		// установка заголовка для всех запросов
+		axios.defaults.headers.common['Attribute'] = CONSTANTS.API_TOKEN;
 
 		// состояние
 		this.state = {
