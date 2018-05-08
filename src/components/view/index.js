@@ -57,7 +57,7 @@ class View extends Component {
 				<div className="view-object-map">
 				<YMaps>
 					<Map
-						options={ CONSTANTS.YandexMAP[CONSTANTS.CITY_ID].options }
+						options={{ maxZoom: 17 }}
 						state={ mapState }
 						width={ '100%' }
 						height={ '100%' }
@@ -65,10 +65,9 @@ class View extends Component {
 						<Placemark
 							geometry={{ coordinates: mapState['center'] }}
 							properties={{
-								balloonContentHeader: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(this.state.data.obj),
-								balloonContentBody: Helper.balloonInfo(this.state.data.obj, 'withoutLink')
+								hintContent: CONSTANTS.CITY_NAME + ', ' + Helper.formatAdresValue(this.state.data.obj)
 							}}
-							options={{ preset: 'islands#violetCircleDotIcon' }}
+							options={{ preset: 'islands#violetCircleDotIcon', hasBalloon: false }}
 						/>
 					</Map>
 				</YMaps>
@@ -120,7 +119,7 @@ class View extends Component {
 
 					<Gallery images={ _imgs } />
 
-					<div className="info">
+					<div className="object-info">
 						<div className="object-block">
 							<span><strong>Сделка:</strong> { String(CONSTANTS.SALES[this.state.data.obj.sale]).toLowerCase() }</span>
 							<span><strong>Объект:</strong> { String(this.state.data.obj.estate_type).toLowerCase() }</span>
@@ -152,6 +151,7 @@ class View extends Component {
 								<h3><a href={ "tel:" + this.state.data.obj.agent_phone_mobile }>{ this.state.data.obj.agent_phone_mobile }</a></h3>
 							</div>
 						</div>
+
 					</div>
 
 					{ this.renderMap() }

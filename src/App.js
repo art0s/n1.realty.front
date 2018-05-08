@@ -18,7 +18,6 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import NavigationCloseIcon from 'material-ui/svg-icons/navigation/close';
 import NavigationCheckIcon from 'material-ui/svg-icons/navigation/check';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
@@ -26,7 +25,9 @@ import Checkbox from 'material-ui/Checkbox';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import HomeIcon from 'material-ui/svg-icons/action/home';
 import ContactIcon from 'material-ui/svg-icons/communication/contact-mail';
+import MailIcon from 'material-ui/svg-icons/communication/mail-outline';
 import AgenciesIcon from 'material-ui/svg-icons/places/business-center';
+import AgenciesTopIcon from 'material-ui/svg-icons/social/group';
 import MapIcon from 'material-ui/svg-icons/maps/place';
 import TableIcon from 'material-ui/svg-icons/navigation/apps';
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,7 +134,8 @@ class App extends Component {
 		// всегда делаем сброс запрета на скролл
 		setTimeout(() => {
 			window.onscroll = () => {}
-		}, 100);		
+		}, 100);
+
 		// отключаем свайп у правой панели
 		this._rightDrawer.disableSwipeHandling();
 
@@ -412,11 +414,50 @@ class App extends Component {
 	}
 
 	//=========================================================================
-	handleBottomNavigation(index) {
+	handleBottomNavigation(index, event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (this.state.bottomNavigationValue === index)
+		{
+			return;
+		}
+
 		this.setState({ bottomNavigationValue: index });
 		if (index === 0) this.props.history.push('/');
 		else if (index === 1) this.props.history.push('/agencies');
 		else if (index === 2) this.props.history.push('/contact');
+	}
+
+	//=========================================================================
+	renderRightButtons() {
+		return (
+			<span className="top-right-buttons-wrapper">
+				<FlatButton
+					className={ 'objects-button top-button' + (this.state.bottomNavigationValue === 0 ? ' active' : '') }
+					primary={true}
+					label="Объекты"
+					labelPosition="after"
+					icon={ <HomeIcon /> }
+					onClick={ e => this.handleBottomNavigation(0, e) }
+				/>
+				<FlatButton
+					className={ 'agencies-button top-button' + (this.state.bottomNavigationValue === 1 ? ' active' : '') }
+					label="Агентства"
+					labelPosition="after"
+					icon={ <AgenciesTopIcon /> }
+					onClick={ e => this.handleBottomNavigation(1, e) }
+				/>
+				<FlatButton
+					className={ 'contact-button top-button' + (this.state.bottomNavigationValue === 2 ? ' active' : '') }
+					label="Контакты"
+					labelPosition="after"
+					icon={ <MailIcon /> }
+					onClick={ e => this.handleBottomNavigation(2, e) }
+				/>
+				<FlatButton className="search-button" label="Фильтр" labelPosition="before" icon={ <ActionSearchIcon /> } />
+			</span>
+		);
 	}
 
 	//=========================================================================
@@ -425,13 +466,15 @@ class App extends Component {
 			<MuiThemeProvider>
 			<div className="App">
 
+				<div className="appbar-wrapper">
 					<AppBar
 						className="appbar"
 						title={this.TITLE}
 						onLeftIconButtonClick={() => this.setState({ openLeftDrawer: true })}
 						onRightIconButtonClick={() => this.setState({ openRightDrawer: true })}
-						iconElementRight={<FlatButton className="search-button" label="Фильтр" labelPosition="before" icon={<ActionSearchIcon />} />}
+						iconElementRight={ this.renderRightButtons() }
 					/>
+				</div>
 
 					<Drawer
 						docked={ false }
@@ -692,12 +735,6 @@ class App extends Component {
 							: false
 					}
 
-					<div className="big-drawer-right">
-						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/' } label="Объекты" onClick={ this.menuItemClickHandler('/') } />
-						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/agencies' } label="Агентства" onClick={ this.menuItemClickHandler('/agencies') } />
-						<RaisedButton className="btn" primary={ this.props.location.pathname !== '/contact' } label="Контакты" onClick={ this.menuItemClickHandler('/contact') } />
-					</div>
-
 					<Switch>						
 						<Route exact path="/view/:org/:id" component={ View } />
 						<Route exact path="/agencies" component={ Agencies } />
@@ -722,17 +759,17 @@ class App extends Component {
 							<BottomNavigationItem
 								label="Объекты"
 								icon={ <HomeIcon /> }
-								onClick={ () => this.handleBottomNavigation(0) }
+								onClick={ e => this.handleBottomNavigation(0, e) }
 							/>
 							<BottomNavigationItem
 								label="Агентства"
 								icon={ <AgenciesIcon /> }
-								onClick={ () => this.handleBottomNavigation(1) }
+								onClick={ e => this.handleBottomNavigation(1, e) }
 							/>
 							<BottomNavigationItem
 								label="Контакты"
 								icon={ <ContactIcon /> }
-								onClick={ () => this.handleBottomNavigation(2) }
+								onClick={ e => this.handleBottomNavigation(2, e) }
 							/>
 						</BottomNavigation>
 

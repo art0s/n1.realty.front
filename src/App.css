@@ -8,9 +8,56 @@ a {
 	max-width: 1200px;
 }
 
+.appbar-wrapper {
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+    z-index: 100;
+}
+
+.appbar {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.top-right-buttons-wrapper {
+    position: relative;
+    top: 6px;
+}
+
+.top-right-buttons-wrapper button {
+    margin-left: 20px !important;
+    color: white !important;
+}
+
+.top-right-buttons-wrapper svg {
+    fill: white !important;
+}
+
+.top-right-buttons-wrapper button.active {
+    color: rgb(0, 188, 212) !important;
+    background-color: white !important;
+}
+
+.top-right-buttons-wrapper button.active svg {
+    fill: rgb(0, 188, 212) !important;
+}
+
+.top-right-buttons-wrapper .top-button svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.top-right-buttons-wrapper .top-button span {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+}
+
 .page-content {	
 	padding: 0 15px 15px;
     min-height: 790px;
+    margin-top: 65px;
 }
 
 .page-content h2 { 
@@ -313,7 +360,7 @@ div.clusterer-balloon {
 
     .page-content {
         margin-left: 220px;
-        margin-right: 140px;
+        margin-right: 0;
         padding: 0;
     }
 
@@ -323,6 +370,10 @@ div.clusterer-balloon {
         margin-left: 20px;
     }
 
+    .page-content.view {
+        margin-right: 20px;
+    }
+
     .objects-wrapper {
         padding-top: 10px;
     }
@@ -330,6 +381,10 @@ div.clusterer-balloon {
 
 @media (max-width: 767px) {
     .appbar h1 { display: none }
+
+     .top-right-buttons-wrapper .top-button {
+        display: none !important;
+     }
 
     .drawer-header-title {
         display: block;
