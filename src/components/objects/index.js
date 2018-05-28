@@ -49,6 +49,29 @@ class Objects extends Component {
 	}
 
 	//=========================================================================
+	componentWillReceiveProps(nextProps) {
+		// если закончилась загрузка
+		if (!nextProps.loading && nextProps.records)
+		{
+			// подгрузим данные
+			this.loadData();
+		}
+	}
+
+	//=========================================================================
+	componentDidUpdate(nextProps, nextState) {
+		// если поменялся режим показа объектов
+		// или
+		// если текущая страница поменялась (то есть увеличилась)
+		if (nextProps.viewMode !== this.props.viewMode ||
+			nextProps.currentPage !== this.props.currentPage)
+		{
+			// подгрузим данные
+			this.loadData();
+		}
+	}
+
+	//=========================================================================
 	nextPage() {
 		// если родитель не задал данные - ничего не делаем,
 		if (!this.props.records.length || !CONSTANTS.PAGE_SIZE) return;
@@ -74,16 +97,6 @@ class Objects extends Component {
 			this.setState({ renderRecords: this.props.records.slice(0, this.props.currentPage * CONSTANTS.PAGE_SIZE) });
 		else
 			this.setState({ renderRecords: this.props.records });
-	}
-
-	//=========================================================================
-	componentDidUpdate(nextProps, nextState) {
-		// если текущая страница поменялась (то есть увеличилась)
-		if (nextProps.currentPage !== this.props.currentPage)
-		{
-			// подгрузим данные
-			this.loadData();
-		}
 	}
 
 	//=========================================================================

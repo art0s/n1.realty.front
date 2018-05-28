@@ -104,8 +104,10 @@ class App extends Component {
 		let _idx = 0;
 		if (this.props.history.location && this.props.history.location.pathname)
 		{
-			if (~this.props.history.location.pathname.indexOf('agencies')) _idx = 1;
+			if (this.props.location.pathname === '/') _idx = 0;
+			else if (~this.props.history.location.pathname.indexOf('agencies')) _idx = 1;
 			else if (~this.props.history.location.pathname.indexOf('contact')) _idx = 2;
+			else if (~this.props.location.pathname.indexOf('/view/')) _idx = 3;
 		}
 		// установка активного тулбара
 		this.setState({ bottomNavigationValue: _idx });
@@ -149,8 +151,10 @@ class App extends Component {
 			// так как могут сразу пройти по прямой
 			// ссылке например на страницу контактов
 			let _idx = 0;
-			if (~this.props.location.pathname.indexOf('agencies')) _idx = 1;
+			if (this.props.location.pathname === '/') _idx = 0;
+			else if (~this.props.location.pathname.indexOf('agencies')) _idx = 1;
 			else if (~this.props.location.pathname.indexOf('contact')) _idx = 2;
+			else if (~this.props.location.pathname.indexOf('/view/')) _idx = 3;
 			this.setState({ bottomNavigationValue: _idx });
 		}
 	}
@@ -418,7 +422,7 @@ class App extends Component {
 		event.preventDefault();
 		event.stopPropagation();
 
-		if (this.state.bottomNavigationValue === index)
+		if (this.state.bottomNavigationValue === index || index >= 3)
 		{
 			return;
 		}
@@ -597,13 +601,14 @@ class App extends Component {
 									<Range
 										min={ this.state.filter.price.min }
 										max={ this.state.filter.price.max }
-										step={ this.state.filter.sales.value <= 0 ? 10 : 1000 }
+										step={ this.state.filter.sales.value <= 0 ? 100 : 1 }
 										value={ this.state.filter.price.Value }
 										onChange={ (val) => this.changePriceRange(val) }
 										onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
 									/>
-								</div>								
+								</div>							
 								<Checkbox
+									style={{ display: 'none' }}
 									className="without-sum"
 									key="withoutSum"
 									label="Показывать объекты без стоимости"
@@ -716,13 +721,15 @@ class App extends Component {
 											<Range
 												min={ this.state.filter.price.min }
 												max={ this.state.filter.price.max }
-												step={ this.state.filter.sales.value <= 0 ? 10 : 1000 }
+												step={ this.state.filter.sales.value <= 0 ? 100 : 1 }
 												value={ this.state.filter.price.Value }
 												onChange={ (val) => this.changePriceRange(val) }
 												onAfterChange={ (val) => this.changeFilter('price', { k: 'range', v: val }) }
 											/>
-										</div>								
+										</div>
+
 										<Checkbox
+											style={{ display: 'none' }}
 											className="without-sum"
 											key="withoutSum"
 											label="Показывать объекты без стоимости"
@@ -736,7 +743,6 @@ class App extends Component {
 					}
 
 					<Switch>						
-						<Route exact path="/view/:org/:id" component={ View } />
 						<Route exact path="/agencies" component={ Agencies } />
 						<Route exact path="/contact" component={ Contact } />
 						<Route exact path="/"
@@ -749,6 +755,9 @@ class App extends Component {
 									currentPage={ this.state.pageShown }
 								/>
 							}
+						/>
+						<Route exact path="/view/:org/:id"
+							render={ (props) => <View {...props} records={ this.state.filteredRecords } /> }
 						/>
 						<Route component={ NotFound } />
 					</Switch>
